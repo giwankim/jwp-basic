@@ -12,6 +12,9 @@ repositories {
 }
 
 dependencies {
+    implementation ("javax.servlet:jstl:1.2")
+    implementation ("javax.servlet:javax.servlet-api:4.0.1")
+
     implementation("org.springframework:spring-jdbc:6.1.5")
     implementation("org.springframework:spring-web:6.1.5")
 
