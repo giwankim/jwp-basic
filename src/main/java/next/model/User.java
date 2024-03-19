@@ -5,9 +5,9 @@ import java.util.Objects;
 public class User {
 
   private final String userId;
-  private final String password;
-  private final String name;
-  private final String email;
+  private String password;
+  private String name;
+  private String email;
 
   public User(String userId, String password, String name, String email) {
     this.userId = userId;
@@ -30,6 +30,16 @@ public class User {
 
   public String getEmail() {
     return email;
+  }
+
+  public void update(User updateUser) {
+    this.password = updateUser.password;
+    this.name = updateUser.name;
+    this.email = updateUser.email;
+  }
+
+  public boolean comparePasswords(String password) {
+    return this.password.equals(password);
   }
 
   @Override

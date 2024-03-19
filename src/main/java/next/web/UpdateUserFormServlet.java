@@ -11,10 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import next.exception.UserNotFoundException;
 import next.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@WebServlet("/user/updateForm")
+@WebServlet(value = "/user/updateForm")
 public class UpdateUserFormServlet extends HttpServlet {
 
   @Override

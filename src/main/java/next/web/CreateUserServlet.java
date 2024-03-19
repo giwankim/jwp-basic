@@ -11,7 +11,7 @@ import next.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet("/user/create")
+@WebServlet(value = "/user/create")
 public class CreateUserServlet extends HttpServlet {
 
   private static final Logger logger = LoggerFactory.getLogger(CreateUserServlet.class);
