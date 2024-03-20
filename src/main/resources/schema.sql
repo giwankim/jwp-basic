@@ -8,5 +8,3 @@ CREATE TABLE users
     email    varchar(50),
     PRIMARY KEY (userId)
 );
-
-INSERT INTO users VALUES ('admin', 'password', '자바지기', 'admin@slipp.net');
