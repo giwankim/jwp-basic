@@ -1,4 +1,4 @@
-package next.web;
+package next.controller;
 
 import core.db.Database;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import next.exception.UserNotFoundException;
 import next.model.User;
 
 @WebServlet(value = "/user/updateForm")
-public class UpdateUserFormServlet extends HttpServlet {
+public class UpdateUserFormController extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -23,7 +23,7 @@ public class UpdateUserFormServlet extends HttpServlet {
       throw new UserNotFoundException("사용자가 존재하지 않습니다.");
     }
     req.setAttribute("user", optionalUser.get());
-    RequestDispatcher requestDispatcher = req.getRequestDispatcher("/user/updateForm.jsp");
-    requestDispatcher.forward(req, resp);
+    RequestDispatcher rd = req.getRequestDispatcher("/user/updateForm.jsp");
+    rd.forward(req, resp);
   }
 }

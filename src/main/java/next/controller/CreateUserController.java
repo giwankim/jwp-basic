@@ -1,4 +1,4 @@
-package next.web;
+package next.controller;
 
 import core.db.Database;
 import java.io.IOException;
@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebServlet(value = "/user/create")
-public class CreateUserServlet extends HttpServlet {
+public class CreateUserController extends HttpServlet {
 
-  private static final Logger logger = LoggerFactory.getLogger(CreateUserServlet.class);
+  private static final Logger logger = LoggerFactory.getLogger(CreateUserController.class);
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
