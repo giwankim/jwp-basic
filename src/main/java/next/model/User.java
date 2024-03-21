@@ -47,6 +47,13 @@ public class User implements Serializable {
     return this.password.equals(password);
   }
 
+  public boolean isSameUser(User user) {
+    if (this.userId == null) {
+      return false;
+    }
+    return this.userId.equals(user.userId);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
