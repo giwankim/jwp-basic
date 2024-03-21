@@ -1,13 +1,18 @@
 package next.model;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class User {
+public class User implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
 
   private final String userId;
-  private final String password;
-  private final String name;
-  private final String email;
+  private String password;
+  private String name;
+  private String email;
 
   public User(String userId, String password, String name, String email) {
     this.userId = userId;
@@ -32,6 +37,23 @@ public class User {
     return email;
   }
 
+  public void update(User updateUser) {
+    this.password = updateUser.password;
+    this.name = updateUser.name;
+    this.email = updateUser.email;
+  }
+
+  public boolean comparePasswords(String password) {
+    return this.password.equals(password);
+  }
+
+  public boolean isSameUser(User user) {
+    if (this.userId == null) {
+      return false;
+    }
+    return this.userId.equals(user.userId);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -42,8 +64,8 @@ public class User {
     }
     User user = (User) o;
     return Objects.equals(userId, user.userId) && Objects.equals(password,
-        user.password) && Objects.equals(name, user.name) && Objects.equals(email,
-        user.email);
+      user.password) && Objects.equals(name, user.name) && Objects.equals(email,
+      user.email);
   }
 
   @Override
@@ -54,10 +76,10 @@ public class User {
   @Override
   public String toString() {
     return "User{" +
-        "userId='" + userId + '\'' +
-        ", password='" + password + '\'' +
-        ", name='" + name + '\'' +
-        ", email='" + email + '\'' +
-        '}';
+      "userId='" + userId + '\'' +
+      ", password='" + password + '\'' +
+      ", name='" + name + '\'' +
+      ", email='" + email + '\'' +
+      '}';
   }
 }
