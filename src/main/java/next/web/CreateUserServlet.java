@@ -11,7 +11,7 @@ import next.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet("/user/create")
+@WebServlet(value = "/user/create")
 public class CreateUserServlet extends HttpServlet {
 
   private static final Logger logger = LoggerFactory.getLogger(CreateUserServlet.class);
@@ -19,8 +19,11 @@ public class CreateUserServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    User user = new User(req.getParameter("userId"), req.getParameter("password"),
-        req.getParameter("email"), req.getParameter("name"));
+    User user = new User(
+        req.getParameter("userId"),
+        req.getParameter("password"),
+        req.getParameter("name"),
+        req.getParameter("email"));
     Database.addUser(user);
     logger.debug("user : {}", user);
     resp.sendRedirect("/user/list");
