@@ -1,30 +1,25 @@
 package next.controller;
 
 import core.db.Database;
+import core.mvc.Controller;
 import next.exception.UserNotFoundException;
 import next.model.User;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(value = "/user/profile")
-public class ProfileController extends HttpServlet {
+public class ProfileController implements Controller {
+
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String userId = req.getParameter("userId");
-    Optional<User> optionalUser = Database.findById(userId);
+  public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    Optional<User> optionalUser = Database.findById(request.getParameter("userId"));
     if (optionalUser.isEmpty()) {
       throw new UserNotFoundException("사용자를 찾을 수 없습니다.");
     }
-    User user = optionalUser.get();
-    req.setAttribute("user", user);
-    RequestDispatcher rd = req.getRequestDispatcher("/user/profile.jsp");
-    rd.forward(req, resp);
+    request.setAttribute("user", optionalUser.get());
+    return "/user/profile.jsp";
   }
 }

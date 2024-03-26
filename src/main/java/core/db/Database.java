@@ -18,6 +18,10 @@ public class Database {
   }
 
   public static Optional<User> findById(String userId) {
+    if (userId == null) {
+      // ConcurrentHashMap은 null키를 허용하지 않는다.
+      throw new IllegalArgumentException("UserId가 null입니다.");
+    }
     return Optional.ofNullable(users.get(userId));
   }
 
