@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "dispatcher", urlPatterns = "", loadOnStartup = 1)
+@WebServlet(name = "dispatcher", urlPatterns = "/", loadOnStartup = 1)
 public class DispatcherServlet extends HttpServlet {
   private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
@@ -30,6 +30,7 @@ public class DispatcherServlet extends HttpServlet {
 
     Controller controller = requestMapping.getController(requestURI);
     String viewName = controller.execute(request, response);
+
     RequestDispatcher rd = request.getRequestDispatcher(viewName);
     rd.forward(request, response);
   }

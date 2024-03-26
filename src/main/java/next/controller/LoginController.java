@@ -13,13 +13,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(value = {"/user/login", "/user/loginForm"})
+@WebServlet(value = "/user/login")
 public class LoginController extends HttpServlet {
-
-  @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    forward(req, resp);
-  }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

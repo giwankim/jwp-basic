@@ -24,6 +24,8 @@ public class RequestMapping {
 
   void init() {
     mapping.put("/", new HomeController());
+    mapping.put("/user/form", new ForwardController("/user/form.jsp"));
+    mapping.put("/user/loginForm", new ForwardController("/user/login.jsp"));
     mapping.put("/user", new ListUserController());
 
     logger.info("Request mapping initialized");
