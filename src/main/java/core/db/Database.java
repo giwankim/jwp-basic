@@ -4,9 +4,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+
 import next.model.User;
 
 public class Database {
+  private Database() {
+  }
 
   private static final Map<String, User> users = new ConcurrentHashMap<>();
 
@@ -20,5 +23,9 @@ public class Database {
 
   public static Collection<User> findAll() {
     return users.values();
+  }
+
+  public static void deleteAll() {
+    users.clear();
   }
 }
