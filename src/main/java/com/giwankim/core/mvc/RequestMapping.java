@@ -14,7 +14,7 @@ public class RequestMapping {
   private final Map<String, Controller> mapping;
 
   public RequestMapping(Map<String, Controller> mapping) {
-    this.mapping = Objects.requireNonNull(mapping, "Mapping이 null입니다.");
+    this.mapping = Objects.requireNonNull(mapping, "Map이 null입니다.");
   }
 
   public RequestMapping() {
