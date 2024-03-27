@@ -1,7 +1,6 @@
 package com.giwankim.next.controller;
 
 import com.giwankim.core.db.Database;
-import com.giwankim.next.controller.HomeController;
 import com.giwankim.next.model.User;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +42,7 @@ class HomeControllerTest {
   @Test
   void shouldReturnView() throws ServletException, IOException {
     String view = sut.execute(request, response);
-    assertThat(view).isEqualTo("/index.jsp");
+    assertThat(view).isEqualTo("home.jsp");
   }
 
   @Test
