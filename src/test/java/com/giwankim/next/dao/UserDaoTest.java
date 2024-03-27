@@ -9,7 +9,7 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import java.sql.SQLException;
-import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,21 +28,29 @@ class UserDaoTest {
   }
 
   @Test
-  void shouldInsertUser() throws SQLException {
+  void shouldInsert() throws SQLException {
     User user = new User(
       "userId",
       "password",
       "name",
-      "expected@test.com");
-    Optional<User> expected = Optional.of(user);
+      "test@example.com");
 
     userDao.insert(user);
 
-    assertThat(userDao.findByUserId("userId")).isEqualTo(expected);
+    assertThat(userDao.findByUserId("userId"))
+      .isPresent()
+      .contains(user);
   }
 
   @Test
   void shouldReturnEmptyWhenUserIdDoesNotExist() throws SQLException {
-    assertThat(userDao.findByUserId("doesNotExist")).isEmpty();
+    assertThat(userDao.findByUserId("does-not-exist")).isEmpty();
+  }
+
+  @Test
+  void shouldFindAll() throws SQLException {
+    List<User> users = userDao.findAll();
+    assertThat(users).containsExactly(
+      new User("admin", "password", "자바지기", "admin@slipp.net"));
   }
 }
