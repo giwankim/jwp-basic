@@ -2,9 +2,6 @@ package com.giwankim.next.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,24 +10,22 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class LogoutControllerTest {
-  @Mock
   HttpServletRequest request;
 
-  @Mock
   HttpServletResponse response;
 
-  @Mock
   HttpSession session;
 
   LogoutController sut;
 
   @BeforeEach
   void setUp() {
+    request = mock(HttpServletRequest.class);
+    response = mock(HttpServletResponse.class);
+    session = mock(HttpSession.class);
     sut = new LogoutController();
   }
 

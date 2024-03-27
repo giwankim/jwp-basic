@@ -5,9 +5,6 @@ import com.giwankim.next.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,20 +13,20 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 class ProfileControllerTest {
-  @Mock
   HttpServletRequest request;
 
-  @Mock
   HttpServletResponse response;
 
   ProfileController sut;
 
   @BeforeEach
   void setUp() {
+    request = mock(HttpServletRequest.class);
+    response = mock(HttpServletResponse.class);
     sut = new ProfileController();
     Database.addUser(new User("userId", "password", "name", "test@example.com"));
   }

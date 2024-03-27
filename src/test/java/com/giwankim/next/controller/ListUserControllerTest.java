@@ -1,7 +1,6 @@
 package com.giwankim.next.controller;
 
 import com.giwankim.core.db.Database;
-import com.giwankim.next.controller.ListUserController;
 import com.giwankim.next.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,17 +18,20 @@ import static com.giwankim.next.controller.UserSessionUtils.SESSION_USER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ListUserControllerTest {
-  ListUserController sut;
   MockHttpServletRequest request;
+
   HttpServletResponse response;
+
   HttpSession session;
+
+  ListUserController sut;
 
   @BeforeEach
   void setUp() {
-    sut = new ListUserController();
     request = new MockHttpServletRequest();
     response = new MockHttpServletResponse();
     session = new MockHttpSession();
+    sut = new ListUserController();
     Database.addUser(new User("user1", "password1", "name1", "test1@example.com"));
     Database.addUser(new User("user2", "password2", "name2", "test2@example.com"));
   }

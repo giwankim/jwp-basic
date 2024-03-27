@@ -5,9 +5,6 @@ import com.giwankim.next.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,23 +16,23 @@ import static com.giwankim.next.Fixtures.aUser;
 import static com.giwankim.next.controller.UserSessionUtils.SESSION_USER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 class UpdateUserFormControllerTest {
-  @Mock
   HttpServletRequest request;
 
-  @Mock
   HttpServletResponse response;
 
-  @Mock
   HttpSession session;
 
   UpdateUserFormController sut;
 
   @BeforeEach
   void setUp() {
+    request = mock(HttpServletRequest.class);
+    response = mock(HttpServletResponse.class);
+    session = mock(HttpSession.class);
     sut = new UpdateUserFormController();
     Database.addUser(aUser().build());
   }
