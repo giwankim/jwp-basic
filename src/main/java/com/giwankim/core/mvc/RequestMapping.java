@@ -29,6 +29,7 @@ public class RequestMapping {
     mapping.put("/user/profile", new ProfileController());
     mapping.put("/user/login", new LoginController());
     mapping.put("/user/logout", new LogoutController());
+    mapping.put("/user/create", new CreateUserController());
     mapping.put("/user/updateForm", new UpdateUserFormController());
     mapping.put("/user/update", new UpdateUserController());
 
