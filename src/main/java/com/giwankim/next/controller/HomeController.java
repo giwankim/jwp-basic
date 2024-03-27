@@ -13,6 +13,6 @@ public class HomeController implements Controller {
   @Override
   public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     request.setAttribute("users", Database.findAll());
-    return "/index.jsp";
+    return "home.jsp";
   }
 }
