@@ -1,7 +1,6 @@
 package com.giwankim.next.dao;
 
 import com.giwankim.core.jdbc.ConnectionManager;
-import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,11 +38,11 @@ class UserDaoTest {
 
     userDao.insert(user);
 
-    assertThat(userDao.findById("userId")).isEqualTo(expected);
+    assertThat(userDao.findByUserId("userId")).isEqualTo(expected);
   }
 
   @Test
   void shouldReturnEmptyWhenUserIdDoesNotExist() throws SQLException {
-    assertThat(userDao.findById("doesNotExist")).isEmpty();
+    assertThat(userDao.findByUserId("doesNotExist")).isEmpty();
   }
 }

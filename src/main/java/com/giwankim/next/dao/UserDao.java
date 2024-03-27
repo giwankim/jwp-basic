@@ -14,9 +14,7 @@ public class UserDao {
     final String query = "INSERT INTO users (userId, password, name, email) VALUES (?, ?, ?, ?)";
 
     try (Connection connection = ConnectionManager.getConnection()) {
-
       try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-
         pstmt.setString(1, user.getUserId());
         pstmt.setString(2, user.getPassword());
         pstmt.setString(3, user.getName());
@@ -27,17 +25,14 @@ public class UserDao {
     }
   }
 
-  public Optional<User> findById(String userId) throws SQLException {
+  public Optional<User> findByUserId(String userId) throws SQLException {
     final String query = "SELECT userId, password, name, email FROM users WHERE userId = ?";
 
     try (Connection connection = ConnectionManager.getConnection()) {
-
       try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-
         pstmt.setString(1, userId);
 
         try (ResultSet rs = pstmt.executeQuery()) {
-
           if (rs.next()) {
             return Optional.of(
               new User(
