@@ -1,5 +1,7 @@
 package com.giwankim.core.mvc;
 
+import com.giwankim.next.controller.UnauthorizedException;
+import com.giwankim.next.controller.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static org.springframework.http.HttpStatus.*;
 
 @WebServlet(name = "dispatcher", urlPatterns = "/", loadOnStartup = 1)
 public class DispatcherServlet extends HttpServlet {
@@ -31,8 +35,25 @@ public class DispatcherServlet extends HttpServlet {
     logger.debug("Method : {}, Request URI : {}", request.getMethod(), requestURI);
 
     Controller controller = requestMapping.getController(requestURI);
-    String viewName = controller.execute(request, response);
+    if (controller == null) {
+      response.sendError(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase());
+      return;
+    }
 
+    try {
+      String viewName = controller.execute(request, response);
+      move(viewName, request, response);
+    } catch (UnauthorizedException uae) {
+      response.sendError(UNAUTHORIZED.value(), UNAUTHORIZED.getReasonPhrase());
+    } catch (UserNotFoundException unfe) {
+      response.sendError(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase());
+    } catch (Exception e) {
+      logger.error("Exception : ", e);
+      response.sendError(INTERNAL_SERVER_ERROR.value(), INTERNAL_SERVER_ERROR.getReasonPhrase());
+    }
+  }
+
+  private void move(String viewName, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     if (viewName.startsWith(DEFAULT_REDIRECT_PREFIX)) {
       response.sendRedirect(viewName.substring(DEFAULT_REDIRECT_PREFIX.length()));
       return;

@@ -20,6 +20,7 @@ repositories {
 dependencies {
     implementation("javax.servlet:jstl:1.2")
     implementation("javax.servlet:javax.servlet-api:4.0.1")
+    implementation("org.springframework:spring-web:$springVersion")
     implementation("org.springframework:spring-jdbc:$springVersion")
     implementation("org.springframework:spring-test:$springVersion")
     implementation("com.zaxxer:HikariCP:5.1.0")
