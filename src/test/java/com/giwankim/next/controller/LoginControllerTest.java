@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static com.giwankim.next.Fixtures.aUser;
+import static com.giwankim.Fixtures.aUser;
 import static com.giwankim.next.controller.UserSessionUtils.SESSION_USER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;

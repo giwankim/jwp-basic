@@ -29,11 +29,7 @@ class UserDaoTest {
 
   @Test
   void shouldInsert() throws SQLException {
-    User user = new User(
-      "userId",
-      "password",
-      "name",
-      "test@example.com");
+    User user = new User("userId", "password", "name", "test@example.com");
 
     userDao.insert(user);
 
@@ -52,5 +48,17 @@ class UserDaoTest {
     List<User> users = userDao.findAll();
     assertThat(users).containsExactly(
       new User("admin", "password", "자바지기", "admin@slipp.net"));
+  }
+
+  @Test
+  void shouldUpdate() throws SQLException {
+    User user = new User("userId", "password", "name", "test@example.com");
+    userDao.insert(user);
+    User expected = new User("userId", "new-password", "new-name", "new-test@example.com");
+    userDao.update(expected);
+
+    assertThat(userDao.findByUserId("userId"))
+      .isPresent()
+      .contains(expected);
   }
 }
