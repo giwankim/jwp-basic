@@ -70,13 +70,8 @@ public class UserDao {
   }
 
   public void update(User user) throws SQLException {
-    final String sql = createQueryForUpdate();
-    try (Connection connection = ConnectionManager.getConnection()) {
-      try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-        setValuesForUpdate(user, pstmt);
-        pstmt.executeUpdate();
-      }
-    }
+    UpdateJdbcTemplate jdbcTemplate = new UpdateJdbcTemplate();
+    jdbcTemplate.update(user, this);
   }
 
   String createQueryForUpdate() {
