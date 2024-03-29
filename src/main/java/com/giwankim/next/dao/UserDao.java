@@ -13,12 +13,8 @@ import java.util.Optional;
 
 public class UserDao {
   public void insert(User user) throws SQLException {
+    final String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
     JdbcTemplate jdbcTemplate = new JdbcTemplate() {
-      @Override
-      public String createQuery() {
-        return "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
-      }
-
       @Override
       public void setValues(User user, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, user.getUserId());
@@ -27,7 +23,7 @@ public class UserDao {
         pstmt.setString(4, user.getEmail());
       }
     };
-    jdbcTemplate.update(user);
+    jdbcTemplate.update(sql, user);
   }
 
   public Optional<User> findByUserId(String userId) throws SQLException {
@@ -72,12 +68,8 @@ public class UserDao {
   }
 
   public void update(User user) throws SQLException {
+    final String sql = "UPDATE users SET password = ?, name = ?, email = ? WHERE user_id = ?";
     JdbcTemplate jdbcTemplate = new JdbcTemplate() {
-      @Override
-      String createQuery() {
-        return "UPDATE users SET password = ?, name = ?, email = ? WHERE user_id = ?";
-      }
-
       @Override
       void setValues(User user, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, user.getPassword());
@@ -86,6 +78,6 @@ public class UserDao {
         pstmt.setString(4, user.getUserId());
       }
     };
-    jdbcTemplate.update(user);
+    jdbcTemplate.update(sql, user);
   }
 }
