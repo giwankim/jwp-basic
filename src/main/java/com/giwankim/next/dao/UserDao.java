@@ -13,21 +13,21 @@ import java.util.Optional;
 
 public class UserDao {
   public void insert(User user) throws SQLException {
-    InsertJdbcTemplate jdbcTemplate = new InsertJdbcTemplate() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
-      public String createQueryForInsert() {
+      public String createQuery() {
         return "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
       }
 
       @Override
-      public void setValuesForInsert(User user, PreparedStatement pstmt) throws SQLException {
+      public void setValues(User user, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, user.getUserId());
         pstmt.setString(2, user.getPassword());
         pstmt.setString(3, user.getName());
         pstmt.setString(4, user.getEmail());
       }
     };
-    jdbcTemplate.insert(user);
+    jdbcTemplate.update(user);
   }
 
   public Optional<User> findByUserId(String userId) throws SQLException {
@@ -72,14 +72,14 @@ public class UserDao {
   }
 
   public void update(User user) throws SQLException {
-    UpdateJdbcTemplate jdbcTemplate = new UpdateJdbcTemplate() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
-      String createQueryForUpdate() {
+      String createQuery() {
         return "UPDATE users SET password = ?, name = ?, email = ? WHERE user_id = ?";
       }
 
       @Override
-      void setValuesForUpdate(User user, PreparedStatement pstmt) throws SQLException {
+      void setValues(User user, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, user.getPassword());
         pstmt.setString(2, user.getName());
         pstmt.setString(3, user.getEmail());
