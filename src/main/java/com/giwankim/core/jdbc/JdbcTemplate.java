@@ -57,12 +57,9 @@ public class JdbcTemplate {
   }
 
   private PreparedStatementSetter createPreparedStatement(Object... args) {
-    return new PreparedStatementSetter() {
-      @Override
-      public void setValues(PreparedStatement ps) throws SQLException {
-        for (int i = 0; i < args.length; i++) {
-          ps.setObject(i + 1, args[i]);
-        }
+    return ps -> {
+      for (int i = 0; i < args.length; i++) {
+        ps.setObject(i + 1, args[i]);
       }
     };
   }

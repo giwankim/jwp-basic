@@ -4,8 +4,6 @@ import com.giwankim.core.jdbc.JdbcTemplate;
 import com.giwankim.core.jdbc.RowMapper;
 import com.giwankim.next.model.User;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,32 +16,22 @@ public class UserDao {
 
   public Optional<User> findByUserId(String userId) {
     final String sql = "SELECT user_id, password, name, email FROM users WHERE user_id = ?";
-    RowMapper<User> rm = new RowMapper<>() {
-      @Override
-      public User mapRow(ResultSet rs) throws SQLException {
-        return new User(
-          rs.getString("user_id"),
-          rs.getString("password"),
-          rs.getString("name"),
-          rs.getString("email"));
-      }
-    };
+    RowMapper<User> rm = rs -> new User(
+      rs.getString("user_id"),
+      rs.getString("password"),
+      rs.getString("name"),
+      rs.getString("email"));
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rm, userId));
   }
 
   public List<User> findAll() {
     final String sql = "SELECT user_id, password, name, email FROM users";
-    RowMapper<User> rm = new RowMapper<>() {
-      @Override
-      public User mapRow(ResultSet rs) throws SQLException {
-        return new User(
-          rs.getString("user_id"),
-          rs.getString("password"),
-          rs.getString("name"),
-          rs.getString("email"));
-      }
-    };
+    RowMapper<User> rm = rs -> new User(
+      rs.getString("user_id"),
+      rs.getString("password"),
+      rs.getString("name"),
+      rs.getString("email"));
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     return jdbcTemplate.query(sql, rm);
   }
