@@ -13,19 +13,21 @@ import java.util.Optional;
 
 public class UserDao {
   public void insert(User user) throws SQLException {
-    InsertJdbcTemplate jdbcTemplate = new InsertJdbcTemplate();
-    jdbcTemplate.insert(user, this);
-  }
+    InsertJdbcTemplate jdbcTemplate = new InsertJdbcTemplate() {
+      @Override
+      public String createQueryForInsert() {
+        return "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
+      }
 
-  String createQueryForInsert() {
-    return "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
-  }
-
-  void setValuesForInsert(User user, PreparedStatement pstmt) throws SQLException {
-    pstmt.setString(1, user.getUserId());
-    pstmt.setString(2, user.getPassword());
-    pstmt.setString(3, user.getName());
-    pstmt.setString(4, user.getEmail());
+      @Override
+      public void setValuesForInsert(User user, PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1, user.getUserId());
+        pstmt.setString(2, user.getPassword());
+        pstmt.setString(3, user.getName());
+        pstmt.setString(4, user.getEmail());
+      }
+    };
+    jdbcTemplate.insert(user);
   }
 
   public Optional<User> findByUserId(String userId) throws SQLException {
