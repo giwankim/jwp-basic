@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class JdbcTemplate {
-  public void update(String sql) throws SQLException {
+  public void update(String sql, PreparedStatementSetter pss) throws SQLException {
     try (Connection connection = ConnectionManager.getConnection()) {
       try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-        setValues(pstmt);
+        pss.setParameters(pstmt);
         pstmt.executeUpdate();
       }
     }
@@ -31,10 +31,10 @@ public abstract class JdbcTemplate {
     }
   }
 
-  public <T> T queryForObject(String sql) throws SQLException {
+  public <T> T queryForObject(String sql, PreparedStatementSetter pss) throws SQLException {
     try (Connection connection = ConnectionManager.getConnection()) {
       try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-        setValues(pstmt);
+        pss.setParameters(pstmt);
         try (ResultSet rs = pstmt.executeQuery()) {
           return mapRow(rs);
         }
@@ -43,6 +43,4 @@ public abstract class JdbcTemplate {
   }
 
   protected abstract <T> T mapRow(ResultSet rs) throws SQLException;
-
-  protected abstract void setValues(PreparedStatement pstmt) throws SQLException;
 }
