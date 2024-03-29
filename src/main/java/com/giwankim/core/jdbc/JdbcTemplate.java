@@ -17,13 +17,13 @@ public abstract class JdbcTemplate {
     }
   }
 
-  public <T> List<T> query(String sql) throws SQLException {
+  public <T> List<T> query(String sql, RowMapper<T> rm) throws SQLException {
     try (Connection connection = ConnectionManager.getConnection()) {
       try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
         List<T> list = new ArrayList<>();
         try (ResultSet rs = pstmt.executeQuery()) {
           while (rs.next()) {
-            list.add(mapRow(rs));
+            list.add(rm.mapRow(rs));
           }
         }
         return list;

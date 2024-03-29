@@ -2,6 +2,7 @@ package com.giwankim.next.dao;
 
 import com.giwankim.core.jdbc.JdbcTemplate;
 import com.giwankim.core.jdbc.PreparedStatementSetter;
+import com.giwankim.core.jdbc.RowMapper;
 import com.giwankim.next.model.User;
 
 import java.sql.PreparedStatement;
@@ -53,13 +54,19 @@ public class UserDao {
 
   public List<User> findAll() throws SQLException {
     final String sql = "SELECT user_id, password, name, email FROM users";
+    RowMapper<User> rm = new RowMapper<>() {
+      @Override
+      public User mapRow(ResultSet rs) throws SQLException {
+        return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
+      }
+    };
     JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
       protected User mapRow(ResultSet rs) throws SQLException {
         return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
       }
     };
-    return jdbcTemplate.query(sql);
+    return jdbcTemplate.query(sql, rm);
   }
 
   public void update(User user) throws SQLException {
