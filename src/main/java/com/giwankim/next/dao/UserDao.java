@@ -23,12 +23,7 @@ public class UserDao {
         pstmt.setString(4, user.getEmail());
       }
     };
-    JdbcTemplate jdbcTemplate = new JdbcTemplate() {
-      @Override
-      protected User mapRow(ResultSet rs) throws SQLException {
-        return null;
-      }
-    };
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
     jdbcTemplate.update(sql, pss);
   }
 
@@ -40,16 +35,18 @@ public class UserDao {
         pstmt.setString(1, userId);
       }
     };
-    JdbcTemplate jdbcTemplate = new JdbcTemplate() {
+    RowMapper<User> rm = new RowMapper<>() {
       @Override
-      protected User mapRow(ResultSet rs) throws SQLException {
-        if (!rs.next()) {
-          return null;
-        }
-        return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
+      public User mapRow(ResultSet rs) throws SQLException {
+        return new User(
+          rs.getString("user_id"),
+          rs.getString("password"),
+          rs.getString("name"),
+          rs.getString("email"));
       }
     };
-    return Optional.ofNullable(jdbcTemplate.queryForObject(sql, pss));
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    return Optional.ofNullable(jdbcTemplate.queryForObject(sql, pss, rm));
   }
 
   public List<User> findAll() throws SQLException {
@@ -60,12 +57,7 @@ public class UserDao {
         return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
       }
     };
-    JdbcTemplate jdbcTemplate = new JdbcTemplate() {
-      @Override
-      protected User mapRow(ResultSet rs) throws SQLException {
-        return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
-      }
-    };
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
     return jdbcTemplate.query(sql, rm);
   }
 
@@ -80,12 +72,7 @@ public class UserDao {
         pstmt.setString(4, user.getUserId());
       }
     };
-    JdbcTemplate jdbcTemplate = new JdbcTemplate() {
-      @Override
-      protected User mapRow(ResultSet rs) throws SQLException {
-        return null;
-      }
-    };
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
     jdbcTemplate.update(sql, pss);
   }
 }

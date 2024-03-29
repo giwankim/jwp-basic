@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class JdbcTemplate {
+public class JdbcTemplate {
   public void update(String sql, PreparedStatementSetter pss) throws SQLException {
     try (Connection connection = ConnectionManager.getConnection()) {
       try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -31,16 +31,17 @@ public abstract class JdbcTemplate {
     }
   }
 
-  public <T> T queryForObject(String sql, PreparedStatementSetter pss) throws SQLException {
+  public <T> T queryForObject(String sql, PreparedStatementSetter pss, RowMapper<T> rm) throws SQLException {
     try (Connection connection = ConnectionManager.getConnection()) {
       try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
         pss.setParameters(pstmt);
         try (ResultSet rs = pstmt.executeQuery()) {
-          return mapRow(rs);
+          if (!rs.next()) {
+            return null;
+          }
+          return rm.mapRow(rs);
         }
       }
     }
   }
-
-  protected abstract <T> T mapRow(ResultSet rs) throws SQLException;
 }
