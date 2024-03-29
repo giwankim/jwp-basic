@@ -1,5 +1,6 @@
 package com.giwankim.next.dao;
 
+import com.giwankim.core.jdbc.JdbcTemplate;
 import com.giwankim.next.model.User;
 
 import java.sql.PreparedStatement;
@@ -13,12 +14,12 @@ public class UserDao {
     final String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
     JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
-      <T> T mapRow(ResultSet rs) throws SQLException {
+      protected User mapRow(ResultSet rs) throws SQLException {
         return null;
       }
 
       @Override
-      public void setValues(PreparedStatement pstmt) throws SQLException {
+      protected void setValues(PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, user.getUserId());
         pstmt.setString(2, user.getPassword());
         pstmt.setString(3, user.getName());
@@ -32,7 +33,7 @@ public class UserDao {
     final String sql = "SELECT user_id, password, name, email FROM users WHERE user_id = ?";
     JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
-      User mapRow(ResultSet rs) throws SQLException {
+      protected User mapRow(ResultSet rs) throws SQLException {
         if (!rs.next()) {
           return null;
         }
@@ -40,7 +41,7 @@ public class UserDao {
       }
 
       @Override
-      void setValues(PreparedStatement pstmt) throws SQLException {
+      protected void setValues(PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, userId);
       }
     };
@@ -51,12 +52,12 @@ public class UserDao {
     final String sql = "SELECT user_id, password, name, email FROM users";
     JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
-      void setValues(PreparedStatement pstmt) throws SQLException {
+      protected User mapRow(ResultSet rs) throws SQLException {
+        return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
       }
 
       @Override
-      User mapRow(ResultSet rs) throws SQLException {
-        return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
+      protected void setValues(PreparedStatement pstmt) throws SQLException {
       }
     };
     return jdbcTemplate.query(sql);
@@ -66,12 +67,12 @@ public class UserDao {
     final String sql = "UPDATE users SET password = ?, name = ?, email = ? WHERE user_id = ?";
     JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
-      <T> T mapRow(ResultSet rs) throws SQLException {
+      protected User mapRow(ResultSet rs) throws SQLException {
         return null;
       }
 
       @Override
-      void setValues(PreparedStatement pstmt) throws SQLException {
+      protected void setValues(PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, user.getPassword());
         pstmt.setString(2, user.getName());
         pstmt.setString(3, user.getEmail());

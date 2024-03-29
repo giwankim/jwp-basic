@@ -1,6 +1,4 @@
-package com.giwankim.next.dao;
-
-import com.giwankim.core.jdbc.ConnectionManager;
+package com.giwankim.core.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,7 +42,7 @@ public abstract class JdbcTemplate {
     }
   }
 
-  abstract <T> T mapRow(ResultSet rs) throws SQLException;
+  protected abstract <T> T mapRow(ResultSet rs) throws SQLException;
 
-  abstract void setValues(PreparedStatement pstmt) throws SQLException;
+  protected abstract void setValues(PreparedStatement pstmt) throws SQLException;
 }
