@@ -13,6 +13,11 @@ public class UserDao {
     final String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
     JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
+      <T> T mapRow(ResultSet rs) throws SQLException {
+        return null;
+      }
+
+      @Override
       public void setValues(PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, user.getUserId());
         pstmt.setString(2, user.getPassword());
@@ -25,7 +30,7 @@ public class UserDao {
 
   public Optional<User> findByUserId(String userId) throws SQLException {
     final String sql = "SELECT user_id, password, name, email FROM users WHERE user_id = ?";
-    SelectJdbcTemplate jdbcTemplate = new SelectJdbcTemplate() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
       User mapRow(ResultSet rs) throws SQLException {
         if (!rs.next()) {
@@ -44,7 +49,7 @@ public class UserDao {
 
   public List<User> findAll() throws SQLException {
     final String sql = "SELECT user_id, password, name, email FROM users";
-    SelectJdbcTemplate jdbcTemplate = new SelectJdbcTemplate() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate() {
       @Override
       void setValues(PreparedStatement pstmt) throws SQLException {
       }
@@ -60,6 +65,11 @@ public class UserDao {
   public void update(User user) throws SQLException {
     final String sql = "UPDATE users SET password = ?, name = ?, email = ? WHERE user_id = ?";
     JdbcTemplate jdbcTemplate = new JdbcTemplate() {
+      @Override
+      <T> T mapRow(ResultSet rs) throws SQLException {
+        return null;
+      }
+
       @Override
       void setValues(PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, user.getPassword());
