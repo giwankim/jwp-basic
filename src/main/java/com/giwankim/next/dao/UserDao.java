@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserDao {
-  public void insert(User user) throws SQLException {
+  public void insert(User user) {
     final String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
     PreparedStatementSetter pss = new PreparedStatementSetter() {
       @Override
@@ -27,7 +27,7 @@ public class UserDao {
     jdbcTemplate.update(sql, pss);
   }
 
-  public Optional<User> findByUserId(String userId) throws SQLException {
+  public Optional<User> findByUserId(String userId) {
     final String sql = "SELECT user_id, password, name, email FROM users WHERE user_id = ?";
     PreparedStatementSetter pss = new PreparedStatementSetter() {
       @Override
@@ -49,7 +49,7 @@ public class UserDao {
     return Optional.ofNullable(jdbcTemplate.queryForObject(sql, pss, rm));
   }
 
-  public List<User> findAll() throws SQLException {
+  public List<User> findAll() {
     final String sql = "SELECT user_id, password, name, email FROM users";
     RowMapper<User> rm = new RowMapper<>() {
       @Override
@@ -61,7 +61,7 @@ public class UserDao {
     return jdbcTemplate.query(sql, rm);
   }
 
-  public void update(User user) throws SQLException {
+  public void update(User user) {
     final String sql = "UPDATE users SET password = ?, name = ?, email = ? WHERE user_id = ?";
     PreparedStatementSetter pss = new PreparedStatementSetter() {
       @Override

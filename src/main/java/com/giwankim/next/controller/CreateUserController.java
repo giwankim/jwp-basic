@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class CreateUserController implements Controller {
   private static final Logger logger = LoggerFactory.getLogger(CreateUserController.class);
@@ -25,12 +24,7 @@ public class CreateUserController implements Controller {
     logger.debug("user : {}", user);
 
     UserDao userDao = new UserDao();
-    try {
-      userDao.insert(user);
-    } catch (SQLException e) {
-      logger.error(e.getMessage(), e);
-    }
-
+    userDao.insert(user);
     return "redirect:/";
   }
 }
