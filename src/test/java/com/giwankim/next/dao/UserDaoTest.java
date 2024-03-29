@@ -10,6 +10,7 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,6 +35,18 @@ class UserDaoTest {
     userDao.insert(user);
 
     assertThat(userDao.findByUserId("userId"))
+      .isPresent()
+      .contains(user);
+  }
+
+  @Test
+  void shouldFindUserById() throws SQLException {
+    User user = new User("userId", "password", "name", "test@example.com");
+    userDao.insert(user);
+
+    Optional<User> actual = userDao.findByUserId("userId");
+
+    assertThat(actual)
       .isPresent()
       .contains(user);
   }

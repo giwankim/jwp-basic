@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,18 +43,13 @@ public class UserDao {
 
   public List<User> findAll() throws SQLException {
     final String sql = "SELECT user_id, password, name, email FROM users";
-    try (Connection connection = ConnectionManager.getConnection()) {
-      try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-        List<User> users = new ArrayList<>();
-        try (ResultSet rs = pstmt.executeQuery()) {
-          while (rs.next()) {
-            User user = new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
-            users.add(user);
-          }
-        }
-        return users;
+    SelectJdbcTemplate jdbcTemplate = new SelectJdbcTemplate() {
+      @Override
+      User mapRow(ResultSet rs) throws SQLException {
+        return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
       }
-    }
+    };
+    return jdbcTemplate.query(sql);
   }
 
   public void update(User user) throws SQLException {
