@@ -24,5 +24,18 @@ public abstract class SelectJdbcTemplate {
     }
   }
 
+  public <T> T queryForObject(String sql) throws SQLException {
+    try (Connection connection = ConnectionManager.getConnection()) {
+      try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        setValues(pstmt);
+        try (ResultSet rs = pstmt.executeQuery()) {
+          return mapRow(rs);
+        }
+      }
+    }
+  }
+
   abstract <T> T mapRow(ResultSet rs) throws SQLException;
+
+  abstract void setValues(PreparedStatement pstmt) throws SQLException;
 }

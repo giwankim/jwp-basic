@@ -1,9 +1,7 @@
 package com.giwankim.next.dao;
 
-import com.giwankim.core.jdbc.ConnectionManager;
 import com.giwankim.next.model.User;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,23 +25,30 @@ public class UserDao {
 
   public Optional<User> findByUserId(String userId) throws SQLException {
     final String sql = "SELECT user_id, password, name, email FROM users WHERE user_id = ?";
-    try (Connection connection = ConnectionManager.getConnection()) {
-      try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-        pstmt.setString(1, userId);
-
-        try (ResultSet rs = pstmt.executeQuery()) {
-          if (rs.next()) {
-            return Optional.of(new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email")));
-          }
-          return Optional.empty();
+    SelectJdbcTemplate jdbcTemplate = new SelectJdbcTemplate() {
+      @Override
+      User mapRow(ResultSet rs) throws SQLException {
+        if (!rs.next()) {
+          return null;
         }
+        return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
       }
-    }
+
+      @Override
+      void setValues(PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1, userId);
+      }
+    };
+    return Optional.ofNullable(jdbcTemplate.queryForObject(sql));
   }
 
   public List<User> findAll() throws SQLException {
     final String sql = "SELECT user_id, password, name, email FROM users";
     SelectJdbcTemplate jdbcTemplate = new SelectJdbcTemplate() {
+      @Override
+      void setValues(PreparedStatement pstmt) throws SQLException {
+      }
+
       @Override
       User mapRow(ResultSet rs) throws SQLException {
         return new User(rs.getString("user_id"), rs.getString("password"), rs.getString("name"), rs.getString("email"));
