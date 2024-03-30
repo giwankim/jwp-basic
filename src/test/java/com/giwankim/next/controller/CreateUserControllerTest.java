@@ -1,9 +1,12 @@
 package com.giwankim.next.controller;
 
-import com.giwankim.core.db.Database;
-import org.junit.jupiter.api.AfterEach;
+import com.giwankim.core.jdbc.ConnectionManager;
+import com.giwankim.next.dao.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,14 +27,14 @@ class CreateUserControllerTest {
 
   @BeforeEach
   void setUp() {
+    ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+    populator.addScript(new ClassPathResource("schema.sql"));
+    populator.addScript(new ClassPathResource("data.sql"));
+    DatabasePopulatorUtils.execute(populator, ConnectionManager.getDatasource());
+
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
     sut = new CreateUserController();
-  }
-
-  @AfterEach
-  void tearDown() {
-    Database.deleteAll();
   }
 
   @Test
@@ -55,7 +58,7 @@ class CreateUserControllerTest {
 
     sut.execute(request, response);
 
-    assertThat(Database.findById("userId"))
+    assertThat(new UserDao().findByUserId("userId"))
       .isPresent()
       .contains(aUser().build());
   }
