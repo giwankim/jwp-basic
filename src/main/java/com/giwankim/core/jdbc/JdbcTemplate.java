@@ -22,9 +22,10 @@ public class JdbcTemplate {
     update(sql, createPreparedStatement(args));
   }
 
-  public <T> List<T> query(String sql, RowMapper<T> rm) {
+  public <T> List<T> query(String sql, RowMapper<T> rm, PreparedStatementSetter pss) {
     try (Connection connection = ConnectionManager.getConnection();
          PreparedStatement ps = connection.prepareStatement(sql)) {
+      pss.setValues(ps);
       List<T> list = new ArrayList<>();
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
@@ -37,19 +38,16 @@ public class JdbcTemplate {
     }
   }
 
+  public <T> List<T> query(String sql, RowMapper<T> rm, Object... args) {
+    return query(sql, rm, createPreparedStatement(args));
+  }
+
   public <T> T queryForObject(String sql, RowMapper<T> rm, PreparedStatementSetter pss) {
-    try (Connection connection = ConnectionManager.getConnection();
-         PreparedStatement ps = connection.prepareStatement(sql)) {
-      pss.setValues(ps);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (!rs.next()) {
-          return null;
-        }
-        return rm.mapRow(rs);
-      }
-    } catch (SQLException e) {
-      throw new DataAccessException(e);
+    List<T> list = query(sql, rm, pss);
+    if (list.isEmpty()) {
+      return null;
     }
+    return list.getFirst();
   }
 
   public <T> T queryForObject(String sql, RowMapper<T> rm, Object... args) {
