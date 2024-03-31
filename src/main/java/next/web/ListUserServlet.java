@@ -11,9 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet("/user/list")
+@WebServlet(value = "/user/list")
 public class ListUserServlet extends HttpServlet {
-  private static final Logger logger = LoggerFactory.getLogger(ListUserServlet.class);
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
