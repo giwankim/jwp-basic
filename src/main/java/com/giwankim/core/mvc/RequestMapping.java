@@ -33,7 +33,7 @@ public class RequestMapping {
     mapping.put("/user/logout", new LogoutController());
     mapping.put("/user/create", new CreateUserController(userDao));
     mapping.put("/user/updateForm", new UpdateUserFormController(userDao));
-    mapping.put("/user/update", new UpdateUserController());
+    mapping.put("/user/update", new UpdateUserController(userDao));
 
     logger.info("Request mapping initialized");
     mapping.forEach((path, controller) -> logger.info("Path : {}, Controller : {}", path, controller.getClass()));
