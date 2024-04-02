@@ -32,7 +32,7 @@ public class RequestMapping {
     mapping.put("/user/login", new LoginController(userDao));
     mapping.put("/user/logout", new LogoutController());
     mapping.put("/user/create", new CreateUserController(userDao));
-    mapping.put("/user/updateForm", new UpdateUserFormController());
+    mapping.put("/user/updateForm", new UpdateUserFormController(userDao));
     mapping.put("/user/update", new UpdateUserController());
 
     logger.info("Request mapping initialized");
