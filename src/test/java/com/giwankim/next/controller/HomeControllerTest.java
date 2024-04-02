@@ -1,9 +1,7 @@
 package com.giwankim.next.controller;
 
-import com.giwankim.core.db.Database;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,11 +30,6 @@ class HomeControllerTest {
     response = mock(HttpServletResponse.class);
     userDao = mock(UserDao.class);
     sut = new HomeController(userDao);
-  }
-
-  @AfterAll
-  static void afterAll() {
-    Database.deleteAll();
   }
 
   @Test
