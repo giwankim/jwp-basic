@@ -1,10 +1,12 @@
 package com.giwankim.next.controller;
 
 import com.giwankim.core.db.Database;
+import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
@@ -13,9 +15,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
+import static com.giwankim.Fixtures.aUser;
 import static com.giwankim.next.controller.UserSessionUtils.SESSION_USER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 class ListUserControllerTest {
   MockHttpServletRequest request;
@@ -26,14 +31,15 @@ class ListUserControllerTest {
 
   ListUserController sut;
 
+  UserDao userDao;
+
   @BeforeEach
   void setUp() {
     request = new MockHttpServletRequest();
     response = new MockHttpServletResponse();
     session = new MockHttpSession();
-    sut = new ListUserController();
-    Database.addUser(new User("user1", "password1", "name1", "test1@example.com"));
-    Database.addUser(new User("user2", "password2", "name2", "test2@example.com"));
+    userDao = mock(UserDao.class);
+    sut = new ListUserController(userDao);
   }
 
   @AfterEach
@@ -43,7 +49,7 @@ class ListUserControllerTest {
 
   @Test
   void shouldForwardToUserListPage() throws ServletException, IOException {
-    session.setAttribute(SESSION_USER_KEY, new User("userId", "password", "name", "test@example.com"));
+    session.setAttribute(SESSION_USER_KEY, aUser().build());
     request.setSession(session);
 
     String actual = sut.execute(request, response);
@@ -53,17 +59,20 @@ class ListUserControllerTest {
 
   @Test
   void shouldSetUsersAttribute() throws ServletException, IOException {
-    session.setAttribute(SESSION_USER_KEY, new User("userId", "password", "name", "test@example.com"));
+    session.setAttribute(SESSION_USER_KEY, aUser().build());
     request.setSession(session);
+    List<User> users = List.of(aUser().userId("user1").build(), aUser().userId("user2").build());
+    when(userDao.findAll()).thenReturn(users);
 
     sut.execute(request, response);
 
-    assertThat(request.getAttribute("users")).isEqualTo(Database.findAll());
+    assertThat(request.getAttribute("users")).isEqualTo(users);
   }
 
   @Test
   void shouldRedirectToLoginPageIfUserIsNotLoggedIn() throws ServletException, IOException {
     String actual = sut.execute(request, response);
+
     assertThat(actual).isEqualTo("redirect:/user/loginForm");
   }
 }

@@ -27,11 +27,11 @@ public class RequestMapping {
     mapping.put("/", new HomeController(userDao));
     mapping.put("/user/form", new ForwardController("/user/form.jsp"));
     mapping.put("/user/loginForm", new ForwardController("/user/login.jsp"));
-    mapping.put("/user", new ListUserController());
+    mapping.put("/user", new ListUserController(userDao));
     mapping.put("/user/profile", new ProfileController());
     mapping.put("/user/login", new LoginController());
     mapping.put("/user/logout", new LogoutController());
-    mapping.put("/user/create", new CreateUserController());
+    mapping.put("/user/create", new CreateUserController(userDao));
     mapping.put("/user/updateForm", new UpdateUserFormController());
     mapping.put("/user/update", new UpdateUserController());
 
