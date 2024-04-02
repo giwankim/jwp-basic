@@ -1,6 +1,7 @@
-package com.giwankim.next.controller;
+package com.giwankim.next.controller.user;
 
 import com.giwankim.core.mvc.Controller;
+import com.giwankim.next.controller.UserSessionUtils;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
 import org.slf4j.Logger;

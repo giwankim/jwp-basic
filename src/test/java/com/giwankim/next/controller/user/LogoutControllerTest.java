@@ -1,5 +1,6 @@
-package com.giwankim.next.controller;
+package com.giwankim.next.controller.user;
 
+import com.giwankim.next.controller.UserSessionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

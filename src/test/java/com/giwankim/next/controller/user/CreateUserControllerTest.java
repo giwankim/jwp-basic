@@ -1,4 +1,4 @@
-package com.giwankim.next.controller;
+package com.giwankim.next.controller.user;
 
 import com.giwankim.core.jdbc.ConnectionManager;
 import com.giwankim.next.dao.UserDao;
