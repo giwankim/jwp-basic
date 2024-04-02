@@ -1,7 +1,6 @@
 package com.giwankim.next.controller;
 
-import com.giwankim.core.db.Database;
-import org.junit.jupiter.api.AfterEach;
+import com.giwankim.next.dao.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
 import static com.giwankim.Fixtures.aUser;
 import static com.giwankim.next.controller.UserSessionUtils.SESSION_USER_KEY;
@@ -23,6 +23,8 @@ class LoginControllerTest {
 
   HttpSession session;
 
+  UserDao userDao;
+
   LoginController sut;
 
   @BeforeEach
@@ -30,13 +32,8 @@ class LoginControllerTest {
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
     session = mock(HttpSession.class);
-    sut = new LoginController();
-    Database.addUser(aUser().build());
-  }
-
-  @AfterEach
-  void tearDown() {
-    Database.deleteAll();
+    userDao = mock(UserDao.class);
+    sut = new LoginController(userDao);
   }
 
   @Test
@@ -44,6 +41,7 @@ class LoginControllerTest {
     when(request.getParameter("userId")).thenReturn("userId");
     when(request.getParameter("password")).thenReturn("password");
     when(request.getSession()).thenReturn(session);
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(aUser().build()));
 
     sut.execute(request, response);
 
@@ -55,6 +53,7 @@ class LoginControllerTest {
     when(request.getParameter("userId")).thenReturn("userId");
     when(request.getParameter("password")).thenReturn("password");
     when(request.getSession()).thenReturn(session);
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(aUser().build()));
 
     String view = sut.execute(request, response);
 
@@ -85,6 +84,7 @@ class LoginControllerTest {
   void shouldForwardToLoginPageWhenPasswordsDoNotMatch() throws ServletException, IOException {
     when(request.getParameter("userId")).thenReturn("userId");
     when(request.getParameter("password")).thenReturn("different-password");
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(aUser().build()));
 
     String view = sut.execute(request, response);
 
@@ -95,6 +95,7 @@ class LoginControllerTest {
   void shouldSetLoginFailedAttributeWhenPasswordsDoNotMatch() throws ServletException, IOException {
     when(request.getParameter("userId")).thenReturn("userId");
     when(request.getParameter("password")).thenReturn("different-password");
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(aUser().build()));
 
     sut.execute(request, response);
 

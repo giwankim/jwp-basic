@@ -1,8 +1,7 @@
 package com.giwankim.next.controller;
 
-import com.giwankim.core.db.Database;
+import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,10 +9,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
+import static com.giwankim.Fixtures.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class HomeControllerTest {
   HttpServletRequest request;
@@ -22,18 +22,14 @@ class HomeControllerTest {
 
   HomeController sut;
 
+  UserDao userDao;
+
   @BeforeEach
   void setUp() {
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
-    sut = new HomeController();
-    Database.addUser(new User("user1", "password1", "name1", "test1@example.com"));
-    Database.addUser(new User("user2", "password2", "name2", "test2@example.com"));
-  }
-
-  @AfterAll
-  static void afterAll() {
-    Database.deleteAll();
+    userDao = mock(UserDao.class);
+    sut = new HomeController(userDao);
   }
 
   @Test
@@ -44,7 +40,12 @@ class HomeControllerTest {
 
   @Test
   void shouldAttachUsers() throws ServletException, IOException {
+    List<User> users = List.of(aUser().userId("user1").build(), aUser().userId("user2").build());
+    when(userDao.findAll())
+      .thenReturn(users);
+
     sut.execute(request, response);
-    verify(request).setAttribute("users", Database.findAll());
+
+    verify(request).setAttribute("users", users);
   }
 }

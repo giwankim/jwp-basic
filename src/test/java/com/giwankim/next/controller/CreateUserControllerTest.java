@@ -15,8 +15,7 @@ import java.io.IOException;
 
 import static com.giwankim.Fixtures.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class CreateUserControllerTest {
   HttpServletRequest request;
@@ -24,6 +23,8 @@ class CreateUserControllerTest {
   HttpServletResponse response;
 
   CreateUserController sut;
+
+  UserDao userDao;
 
   @BeforeEach
   void setUp() {
@@ -34,7 +35,8 @@ class CreateUserControllerTest {
 
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
-    sut = new CreateUserController();
+    userDao = mock(UserDao.class);
+    sut = new CreateUserController(userDao);
   }
 
   @Test
@@ -58,8 +60,6 @@ class CreateUserControllerTest {
 
     sut.execute(request, response);
 
-    assertThat(new UserDao().findByUserId("userId"))
-      .isPresent()
-      .contains(aUser().build());
+    verify(userDao).insert(aUser().build());
   }
 }

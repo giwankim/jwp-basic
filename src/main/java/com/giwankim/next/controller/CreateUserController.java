@@ -14,6 +14,12 @@ import java.io.IOException;
 public class CreateUserController implements Controller {
   private static final Logger logger = LoggerFactory.getLogger(CreateUserController.class);
 
+  private final UserDao userDao;
+
+  public CreateUserController(UserDao userDao) {
+    this.userDao = userDao;
+  }
+
   @Override
   public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     User user = new User(
@@ -22,8 +28,6 @@ public class CreateUserController implements Controller {
       request.getParameter("name"),
       request.getParameter("email"));
     logger.debug("user : {}", user);
-
-    UserDao userDao = new UserDao();
     userDao.insert(user);
     return "redirect:/";
   }

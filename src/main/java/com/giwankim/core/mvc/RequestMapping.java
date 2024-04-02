@@ -1,6 +1,7 @@
 package com.giwankim.core.mvc;
 
 import com.giwankim.next.controller.*;
+import com.giwankim.next.dao.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,16 +23,17 @@ public class RequestMapping {
   }
 
   void init() {
-    mapping.put("/", new HomeController());
+    UserDao userDao = new UserDao();
+    mapping.put("/", new HomeController(userDao));
     mapping.put("/user/form", new ForwardController("/user/form.jsp"));
     mapping.put("/user/loginForm", new ForwardController("/user/login.jsp"));
-    mapping.put("/user", new ListUserController());
-    mapping.put("/user/profile", new ProfileController());
-    mapping.put("/user/login", new LoginController());
+    mapping.put("/user", new ListUserController(userDao));
+    mapping.put("/user/profile", new ProfileController(userDao));
+    mapping.put("/user/login", new LoginController(userDao));
     mapping.put("/user/logout", new LogoutController());
-    mapping.put("/user/create", new CreateUserController());
-    mapping.put("/user/updateForm", new UpdateUserFormController());
-    mapping.put("/user/update", new UpdateUserController());
+    mapping.put("/user/create", new CreateUserController(userDao));
+    mapping.put("/user/updateForm", new UpdateUserFormController(userDao));
+    mapping.put("/user/update", new UpdateUserController(userDao));
 
     logger.info("Request mapping initialized");
     mapping.forEach((path, controller) -> logger.info("Path : {}, Controller : {}", path, controller.getClass()));

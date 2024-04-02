@@ -1,8 +1,7 @@
 package com.giwankim.next.controller;
 
-import com.giwankim.core.db.Database;
+import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
 import static com.giwankim.Fixtures.aUser;
 import static com.giwankim.next.controller.UserSessionUtils.SESSION_USER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class UpdateUserControllerTest {
   HttpServletRequest request;
@@ -26,7 +25,7 @@ class UpdateUserControllerTest {
 
   HttpSession session;
 
-  User user;
+  UserDao userDao;
 
   UpdateUserController sut;
 
@@ -35,25 +34,21 @@ class UpdateUserControllerTest {
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
     session = mock(HttpSession.class);
-    sut = new UpdateUserController();
-    user = aUser().build();
-    Database.addUser(user);
-  }
-
-  @AfterEach
-  void tearDown() {
-    Database.deleteAll();
+    userDao = mock(UserDao.class);
+    sut = new UpdateUserController(userDao);
   }
 
   @Test
   void shouldUpdateUser() throws ServletException, IOException {
+    User user = aUser().build();
     when(request.getParameter("userId")).thenReturn("userId");
     when(request.getParameter("password")).thenReturn("new-password");
     when(request.getParameter("name")).thenReturn("new-name");
     when(request.getParameter("email")).thenReturn("new-email");
-    when(session.getAttribute(SESSION_USER_KEY)).thenReturn(user);
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(user));
     when(request.getSession()).thenReturn(session);
-    User expected = aUser()
+    when(session.getAttribute(SESSION_USER_KEY)).thenReturn(user);
+    User updateUser = aUser()
       .password("new-password")
       .name("new-name")
       .email("new-email")
@@ -61,14 +56,16 @@ class UpdateUserControllerTest {
 
     sut.execute(request, response);
 
-    assertThat(user).isEqualTo(expected);
+    verify(userDao).update(updateUser);
   }
 
   @Test
   void shouldRedirectToRoot() throws ServletException, IOException {
+    User user = aUser().build();
     when(request.getParameter("userId")).thenReturn("userId");
-    when(session.getAttribute(SESSION_USER_KEY)).thenReturn(user);
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(user));
     when(request.getSession()).thenReturn(session);
+    when(session.getAttribute(SESSION_USER_KEY)).thenReturn(user);
 
     String view = sut.execute(request, response);
 
@@ -87,7 +84,9 @@ class UpdateUserControllerTest {
   @Test
   void shouldThrowExceptionWhenUserSessionDoesNotExist() {
     when(request.getParameter("userId")).thenReturn("userId");
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(aUser().build()));
     when(request.getSession()).thenReturn(session);
+    when(session.getAttribute(SESSION_USER_KEY)).thenReturn(null);
 
     assertThatExceptionOfType(UnauthorizedException.class)
       .isThrownBy(() -> sut.execute(request, response));
@@ -97,8 +96,9 @@ class UpdateUserControllerTest {
   void shouldThrowExceptionWhenUpdatingDifferentUser() {
     User another = aUser().userId("another").build();
     when(request.getParameter("userId")).thenReturn("userId");
-    when(session.getAttribute(SESSION_USER_KEY)).thenReturn(another);
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(aUser().build()));
     when(request.getSession()).thenReturn(session);
+    when(session.getAttribute(SESSION_USER_KEY)).thenReturn(another);
 
     assertThatExceptionOfType(UnauthorizedException.class)
       .isThrownBy(() -> sut.execute(request, response));
