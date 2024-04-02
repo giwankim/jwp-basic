@@ -1,12 +1,9 @@
 package com.giwankim.next.controller;
 
-import com.giwankim.core.db.Database;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
@@ -20,7 +17,8 @@ import java.util.List;
 import static com.giwankim.Fixtures.aUser;
 import static com.giwankim.next.controller.UserSessionUtils.SESSION_USER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ListUserControllerTest {
   MockHttpServletRequest request;
@@ -29,9 +27,10 @@ class ListUserControllerTest {
 
   HttpSession session;
 
+  UserDao userDao;
+
   ListUserController sut;
 
-  UserDao userDao;
 
   @BeforeEach
   void setUp() {
@@ -40,11 +39,6 @@ class ListUserControllerTest {
     session = new MockHttpSession();
     userDao = mock(UserDao.class);
     sut = new ListUserController(userDao);
-  }
-
-  @AfterEach
-  void tearDown() {
-    Database.deleteAll();
   }
 
   @Test
