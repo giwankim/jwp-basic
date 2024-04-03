@@ -65,4 +65,19 @@ class QuestionDaoTest {
     assertThatNoException()
       .isThrownBy(() -> sut.delete(99L));
   }
+
+  @Test
+  void shouldUpdate() {
+    Question question = sut.insert(aQuestion().build());
+    Question expected = aQuestion()
+      .questionId(question.getQuestionId())
+      .writer("new-writer")
+      .title("new-title")
+      .content("new-content")
+      .build();
+
+    Question actual = sut.update(expected);
+
+    assertThat(actual).isEqualTo(expected);
+  }
 }

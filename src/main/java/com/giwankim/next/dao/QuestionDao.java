@@ -58,6 +58,22 @@ public class QuestionDao {
       rs.getInt("count_of_answers")));
   }
 
+  public Question update(Question question) {
+    final String sql = "UPDATE question SET writer = ?, title = ?, contents = ? WHERE question_id = ?";
+    PreparedStatementSetter pss = new PreparedStatementSetter() {
+      @Override
+      public void setValues(PreparedStatement ps) throws SQLException {
+        ps.setString(1, question.getWriter());
+        ps.setString(2, question.getTitle());
+        ps.setString(3, question.getContent());
+        ps.setLong(4, question.getQuestionId());
+      }
+    };
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    jdbcTemplate.update(sql, pss);
+    return findById(question.getQuestionId()).orElseThrow();
+  }
+
   public void delete(long questionId) {
     final String sql = "DELETE FROM question WHERE question_id = ?";
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
