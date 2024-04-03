@@ -8,10 +8,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserDao {
-  public void insert(User user) {
+  public User insert(User user) {
     final String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
-    jdbcTemplate.update(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
+    jdbcTemplate.update(
+      sql,
+      user.getUserId(),
+      user.getPassword(),
+      user.getName(),
+      user.getEmail());
+    return findByUserId(user.getUserId())
+      .orElseThrow();
   }
 
   public Optional<User> findByUserId(String userId) {
@@ -22,7 +29,8 @@ public class UserDao {
       rs.getString("name"),
       rs.getString("email"));
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
-    return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rm, userId));
+    return Optional.ofNullable(
+      jdbcTemplate.queryForObject(sql, rm, userId));
   }
 
   public List<User> findAll() {
@@ -36,9 +44,11 @@ public class UserDao {
     return jdbcTemplate.query(sql, rm);
   }
 
-  public void update(User user) {
+  public User update(User user) {
     final String sql = "UPDATE users SET password = ?, name = ?, email = ? WHERE user_id = ?";
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     jdbcTemplate.update(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
+    return findByUserId(user.getUserId())
+      .orElseThrow();
   }
 }

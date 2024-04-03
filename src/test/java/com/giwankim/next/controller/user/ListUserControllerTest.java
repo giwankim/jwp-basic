@@ -1,4 +1,4 @@
-package com.giwankim.next.controller;
+package com.giwankim.next.controller.user;
 
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
