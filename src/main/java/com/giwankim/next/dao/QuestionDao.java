@@ -57,4 +57,10 @@ public class QuestionDao {
       rs.getObject("created_date", LocalDateTime.class),
       rs.getInt("count_of_answers")));
   }
+
+  public void delete(long questionId) {
+    final String sql = "DELETE FROM question WHERE question_id = ?";
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    jdbcTemplate.update(sql, questionId);
+  }
 }

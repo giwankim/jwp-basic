@@ -12,6 +12,7 @@ import java.util.List;
 
 import static com.giwankim.Fixtures.aQuestion;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 class QuestionDaoTest {
   QuestionDao sut;
@@ -47,5 +48,21 @@ class QuestionDaoTest {
     List<Question> actual = sut.findAll();
 
     assertThat(actual).containsExactly(question2, question1);
+  }
+
+  @Test
+  void shouldDelete() {
+    Question question = sut.insert(aQuestion().build());
+    long questionId = question.getQuestionId();
+
+    sut.delete(questionId);
+
+    assertThat(sut.findById(questionId)).isEmpty();
+  }
+
+  @Test
+  void shouldNotThrowExceptionWhenDeletingNonExisting() {
+    assertThatNoException()
+      .isThrownBy(() -> sut.delete(99L));
   }
 }
