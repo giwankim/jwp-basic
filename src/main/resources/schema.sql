@@ -18,7 +18,7 @@ CREATE TABLE question
     title           varchar(50)   NOT NULL,
     contents        varchar(5000) NOT NULL,
     created_date    timestamp     NOT NULL,
-    count_of_answer int,
+    count_of_answers int,
     PRIMARY KEY (question_id)
 );
 
