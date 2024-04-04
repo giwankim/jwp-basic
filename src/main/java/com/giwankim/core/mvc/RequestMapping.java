@@ -2,6 +2,7 @@ package com.giwankim.core.mvc;
 
 import com.giwankim.next.controller.HomeController;
 import com.giwankim.next.controller.user.*;
+import com.giwankim.next.dao.QuestionDao;
 import com.giwankim.next.dao.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,8 @@ public class RequestMapping {
 
   void init() {
     UserDao userDao = new UserDao();
-    mapping.put("/", new HomeController(userDao));
+    QuestionDao questionDao = new QuestionDao();
+    mapping.put("/", new HomeController(questionDao));
     mapping.put("/user/form", new ForwardController("/user/form.jsp"));
     mapping.put("/user/loginForm", new ForwardController("/user/login.jsp"));
     mapping.put("/user", new ListUserController(userDao));
