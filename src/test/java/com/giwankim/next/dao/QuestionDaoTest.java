@@ -33,7 +33,7 @@ class QuestionDaoTest {
 
     assertThat(actual.getWriter()).isEqualTo(question.getWriter());
     assertThat(actual.getTitle()).isEqualTo(question.getTitle());
-    assertThat(actual.getContent()).isEqualTo(question.getContent());
+    assertThat(actual.getContents()).isEqualTo(question.getContents());
     assertThat(actual.getCreatedDate()).isEqualTo(question.getCreatedDate());
     assertThat(actual.getCountOfAnswers()).isEqualTo(question.getCountOfAnswers());
   }
@@ -73,7 +73,7 @@ class QuestionDaoTest {
       .questionId(question.getQuestionId())
       .writer("new-writer")
       .title("new-title")
-      .content("new-content")
+      .contents("new-content")
       .build();
 
     Question actual = sut.update(expected);

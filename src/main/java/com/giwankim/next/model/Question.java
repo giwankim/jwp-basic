@@ -8,7 +8,7 @@ public class Question {
   private final long questionId;
   private final String writer;
   private final String title;
-  private final String content;
+  private final String contents;
   private final LocalDateTime createdDate;
   private final int countOfAnswers;
 
@@ -16,7 +16,7 @@ public class Question {
     this.questionId = questionId;
     this.writer = writer;
     this.title = title;
-    this.content = content;
+    this.contents = content;
     this.createdDate = createdDate;
     this.countOfAnswers = countOfAnswers;
   }
@@ -33,8 +33,8 @@ public class Question {
     return title;
   }
 
-  public String getContent() {
-    return content;
+  public String getContents() {
+    return contents;
   }
 
   public LocalDateTime getCreatedDate() {
@@ -54,12 +54,12 @@ public class Question {
   public boolean equals(Object object) {
     if (this == object) return true;
     if (!(object instanceof Question question)) return false;
-    return questionId == question.questionId && countOfAnswers == question.countOfAnswers && Objects.equals(writer, question.writer) && Objects.equals(title, question.title) && Objects.equals(content, question.content) && Objects.equals(createdDate, question.createdDate);
+    return questionId == question.questionId && countOfAnswers == question.countOfAnswers && Objects.equals(writer, question.writer) && Objects.equals(title, question.title) && Objects.equals(contents, question.contents) && Objects.equals(createdDate, question.createdDate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(questionId, writer, title, content, createdDate, countOfAnswers);
+    return Objects.hash(questionId, writer, title, contents, createdDate, countOfAnswers);
   }
 
   @Override
@@ -68,7 +68,7 @@ public class Question {
       "questionId=" + questionId +
       ", writer='" + writer + '\'' +
       ", title='" + title + '\'' +
-      ", content='" + content + '\'' +
+      ", contents='" + contents + '\'' +
       ", createdDate=" + createdDate +
       ", countOfAnswers=" + countOfAnswers +
       '}';
@@ -82,7 +82,7 @@ public class Question {
     private long questionId;
     private String writer;
     private String title;
-    private String content;
+    private String contents;
     private LocalDateTime createdDate;
     private int countOfAnswers;
 
@@ -104,8 +104,8 @@ public class Question {
       return this;
     }
 
-    public QuestionBuilder content(String val) {
-      content = val;
+    public QuestionBuilder contents(String val) {
+      contents = val;
       return this;
     }
 
@@ -120,7 +120,7 @@ public class Question {
     }
 
     public Question build() {
-      return new Question(questionId, writer, title, content, createdDate, countOfAnswers);
+      return new Question(questionId, writer, title, contents, createdDate, countOfAnswers);
     }
   }
 }

@@ -19,7 +19,7 @@ public class QuestionDao {
         PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, question.getWriter());
         ps.setString(2, question.getTitle());
-        ps.setString(3, question.getContent());
+        ps.setString(3, question.getContents());
         ps.setObject(4, question.getCreatedDate());
         ps.setInt(5, question.getCountOfAnswers());
         return ps;
@@ -65,7 +65,7 @@ public class QuestionDao {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, question.getWriter());
         ps.setString(2, question.getTitle());
-        ps.setString(3, question.getContent());
+        ps.setString(3, question.getContents());
         ps.setLong(4, question.getQuestionId());
       }
     };
