@@ -8,10 +8,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.giwankim.Fixtures.anAnswer;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 class AnswerDaoTest {
 
@@ -51,5 +53,41 @@ class AnswerDaoTest {
   @Test
   void shouldReturnEmptyOptionalIfNotFound() {
     assertThat(sut.findById(99L)).isEmpty();
+  }
+
+  @Test
+  void shouldFindAllByQuestionId() {
+    long questionId = 1L;
+    Answer answer1 = sut.insert(
+      anAnswer()
+        .contents("첫번째 질문")
+        .questionId(questionId)
+        .build());
+    Answer answer2 = sut.insert(
+      anAnswer()
+        .contents("두번째 질문")
+        .questionId(questionId)
+        .build());
+
+    List<Answer> actual = sut.findAllByQuestionId(questionId);
+
+    assertThat(actual).containsExactly(answer2, answer1);
+  }
+
+  @Test
+  void shouldDelete() {
+    Answer answer = sut.insert(anAnswer().build());
+    long answerId = answer.getAnswerId();
+
+    sut.delete(answerId);
+
+    assertThat(sut.findById(answerId))
+      .isEmpty();
+  }
+
+  @Test
+  void shouldNotThrowExceptionWhenDeletingNonExistent() {
+    assertThatNoException().isThrownBy(
+      () -> sut.delete(99));
   }
 }

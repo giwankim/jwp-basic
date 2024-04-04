@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public class AnswerDao {
@@ -43,5 +44,24 @@ public class AnswerDao {
       rs.getLong("question_id")
     ), answerId);
     return Optional.ofNullable(answer);
+  }
+
+  public List<Answer> findAllByQuestionId(long questionId) {
+    final String sql = "SELECT answer_id, writer, contents, created_date, question_id FROM answer WHERE question_id = ?" +
+      " ORDER BY answer_id DESC";
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    return jdbcTemplate.query(sql, rs -> new Answer(
+      rs.getLong("answer_id"),
+      rs.getString("writer"),
+      rs.getString("contents"),
+      rs.getObject("created_date", LocalDateTime.class),
+      rs.getLong("question_id")
+    ), questionId);
+  }
+
+  public void delete(long answerId) {
+    final String sql = "DELETE FROM answer WHERE answer_id = ?";
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    jdbcTemplate.update(sql, answerId);
   }
 }

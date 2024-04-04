@@ -9,10 +9,10 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.giwankim.Fixtures.aQuestion;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.*;
 
 class QuestionDaoTest {
   QuestionDao sut;
@@ -61,9 +61,9 @@ class QuestionDaoTest {
   }
 
   @Test
-  void shouldNotThrowExceptionWhenDeletingNonExisting() {
-    assertThatNoException()
-      .isThrownBy(() -> sut.delete(99L));
+  void shouldNotThrowExceptionWhenDeletingNonExistent() {
+    assertThatNoException().isThrownBy(
+      () -> sut.delete(99L));
   }
 
   @Test
@@ -79,5 +79,12 @@ class QuestionDaoTest {
     Question actual = sut.update(expected);
 
     assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void shouldThrowExceptionWhenUpdateQuestionDoesNotExist() {
+    Question doesNotExist = aQuestion().questionId(99L).build();
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> sut.update(doesNotExist));
   }
 }
