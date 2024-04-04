@@ -14,7 +14,7 @@
   <div class="col-md-12 col-sm-12 col-lg-12">
     <div class="panel panel-default">
       <header class="qna-header">
-        <h2 class="qna-title">InitializingBean implements afterPropertiesSet() 호출되지 않는 문제.</h2>
+        <h2 class="qna-title">${question.title}</h2>
       </header>
       <div class="content-main">
         <article class="article">
@@ -32,7 +32,7 @@
             </div>
           </div>
           <div class="article-doc">
-            ${question.content}
+            ${question.contents}
           </div>
           <div class="article-util">
             <ul class="article-util-list">
@@ -57,74 +57,45 @@
             <p class="qna-comment-count"><strong>${question.countOfAnswers}</strong>개의 의견</p>
             <div class="qna-comment-slipp-articles">
 
-              <article class="article" id="answer-1405">
-                <div class="article-header">
-                  <div class="article-header-thumb">
-                    <img src="https://graph.facebook.com/v2.3/1324855987/picture"
-                         class="article-author-thumb" alt="">
+              <c:forEach items="${answers}" var="answer">
+                <article class="article">
+                  <div class="article-header">
+                    <div class="article-header-thumb">
+                      <img src="https://graph.facebook.com/v2.3/1324855987/picture"
+                           class="article-author-thumb" alt="">
+                    </div>
+                    <div class="article-header-text">
+                      <a href="/users/1/자바지기" class="article-author-name">${answer.writer}</a>
+                      <a href="#answer-1434" class="article-header-time" title="퍼머링크">
+                          ${answer.formattedCreatedDate}
+                      </a>
+                    </div>
                   </div>
-                  <div class="article-header-text">
-                    <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                    <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                      2016-01-12 14:06
-                    </a>
+
+                  <div class="article-doc comment-doc">
+                    <p>${answer.contents}</p>
                   </div>
-                </div>
-                <div class="article-doc comment-doc">
-                  <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
-                </div>
-                <div class="article-util">
-                  <ul class="article-util-list">
-                    <li>
-                      <a class="link-modify-article"
-                         href="/questions/413/answers/1405/form">수정</a>
-                    </li>
-                    <li>
-                      <form class="form-delete" action="/questions/413/answers/1405"
-                            method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="link-delete-article">삭제</button>
-                      </form>
-                    </li>
-                  </ul>
-                </div>
-              </article>
-              <%--              --%>
-              <article class="article" id="answer-1406">
-                <div class="article-header">
-                  <div class="article-header-thumb">
-                    <img src="https://graph.facebook.com/v2.3/1324855987/picture"
-                         class="article-author-thumb" alt="">
+
+                  <div class="article-util">
+                    <ul class="article-util-list">
+                      <li>
+                        <a class="link-modify-article"
+                           href="/api/qna/deleteAnswer?answerId=${answer.answerId}">수정</a>
+                      </li>
+                      <li>
+                        <form class="form-delete" action="/api/qna/deleteAnswer"
+                              method="POST">
+                          <input type="hidden" name="answerId" value="${answer.answerId}">
+                          <button type="submit" class="link-delete-article">삭제</button>
+                        </form>
+                      </li>
+                    </ul>
                   </div>
-                  <div class="article-header-text">
-                    <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
-                    <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                      2016-01-12 14:06
-                    </a>
-                  </div>
-                </div>
-                <div class="article-doc comment-doc">
-                  <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
-                </div>
-                <div class="article-util">
-                  <ul class="article-util-list">
-                    <li>
-                      <a class="link-modify-article"
-                         href="/questions/413/answers/1405/form">수정</a>
-                    </li>
-                    <li>
-                      <form class="form-delete" action="/questions/413/answers/1405"
-                            method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="link-delete-article">삭제</button>
-                      </form>
-                    </li>
-                  </ul>
-                </div>
-              </article>
+                </article>
+              </c:forEach>
 
               <div class="answerWrite">
-                <form name="answer" method="post">
+                <form name="answer" method="POST">
                   <input type="hidden" name="questionId" value="${question.questionId}">
                   <div class="form-group col-lg-4" style="padding-top:10px;">
                     <input class="form-control" id="writer" name="writer" placeholder="이름">
@@ -136,6 +107,7 @@
                   <div class="clearfix"/>
                 </form>
               </div>
+
             </div>
           </div>
         </div>

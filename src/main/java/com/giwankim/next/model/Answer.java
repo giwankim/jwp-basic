@@ -1,6 +1,7 @@
 package com.giwankim.next.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Answer {
@@ -32,6 +33,11 @@ public class Answer {
 
   public LocalDateTime getCreatedDate() {
     return createdDate;
+  }
+
+  public String getFormattedCreatedDate() {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    return createdDate.format(formatter);
   }
 
   public long getQuestionId() {
