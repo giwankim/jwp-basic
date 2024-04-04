@@ -82,7 +82,7 @@ class QuestionDaoTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenUpdateQuestionDoesNotExist() {
+  void shouldThrowExceptionWhenUpdatingNonExistent() {
     Question doesNotExist = aQuestion().questionId(99L).build();
     assertThatExceptionOfType(NoSuchElementException.class)
       .isThrownBy(() -> sut.update(doesNotExist));

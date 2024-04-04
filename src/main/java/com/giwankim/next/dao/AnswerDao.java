@@ -59,6 +59,17 @@ public class AnswerDao {
     ), questionId);
   }
 
+  public Answer update(Answer answer) {
+    final String sql = "UPDATE answer SET writer = ?, contents = ?, question_id = ? WHERE answer_id = ?";
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    jdbcTemplate.update(sql,
+      answer.getWriter(),
+      answer.getContents(),
+      answer.getQuestionId(),
+      answer.getAnswerId());
+    return findById(answer.getAnswerId()).orElseThrow();
+  }
+
   public void delete(long answerId) {
     final String sql = "DELETE FROM answer WHERE answer_id = ?";
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
