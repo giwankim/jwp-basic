@@ -80,7 +80,7 @@
                     <ul class="article-util-list">
                       <li>
                         <a class="link-modify-article"
-                           href="/api/qna/deleteAnswer?answerId=${answer.answerId}">수정</a>
+                           href="/api/qna/updateAnswer?answerId=${answer.answerId}">수정</a>
                       </li>
                       <li>
                         <form class="form-delete" action="/api/qna/deleteAnswer"

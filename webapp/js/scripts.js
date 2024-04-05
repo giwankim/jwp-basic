@@ -28,7 +28,6 @@ function addAnswer(e) {
 }
 
 function onSuccess(json, status) {
-  console.log(json);
   const answerTemplate = $("#answerTemplate").html();
   const template = answerTemplate.format(
     json.writer,
@@ -39,7 +38,31 @@ function onSuccess(json, status) {
 }
 
 function onError(xhr, status) {
-  alert('error');
+  alert('error : failed to add answer');
+}
+
+$(".qna-comment").on("click", ".form-delete", deleteAnswer);
+
+function deleteAnswer(e) {
+  e.preventDefault();
+
+  const deleteBtn = $(this);
+  const queryString = deleteBtn.closest("form").serialize();
+
+  $.ajax({
+    type: "post",
+    url: "/api/qna/deleteAnswer",
+    data: queryString,
+    dataType: "json",
+    error: function (xhr, status) {
+      alert("error : failed to delete answer");
+    },
+    success: function (json, status) {
+      if (json.success) {
+        deleteBtn.closest("article").remove();
+      }
+    }
+  });
 }
 
 String.prototype.format = function () {
