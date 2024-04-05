@@ -42,7 +42,9 @@ public class DispatcherServlet extends HttpServlet {
 
     try {
       String viewName = controller.execute(request, response);
-      move(viewName, request, response);
+      if (viewName != null) {
+        move(viewName, request, response);
+      }
     } catch (UnauthorizedException uae) {
       response.sendError(UNAUTHORIZED.value(), UNAUTHORIZED.getReasonPhrase());
     } catch (UserNotFoundException unfe) {

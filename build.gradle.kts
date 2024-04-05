@@ -8,6 +8,7 @@ version = "1.0-SNAPSHOT"
 val tomcatVersion = "8.5.99"
 val springVersion = "5.3.33"
 val logbackVersion = "1.5.3"
+val jacksonVersion = "2.17.0"
 val junitVersion = "5.10.2"
 val assertjVersion = "3.25.3"
 val mockitoVersion = "5.11.0"
@@ -26,6 +27,9 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("net.ttddyy:datasource-proxy:1.10")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation(platform("com.fasterxml.jackson:jackson-bom:$jacksonVersion"))
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("org.apache.tomcat.embed:tomcat-embed-core:$tomcatVersion")
     implementation("org.apache.tomcat.embed:tomcat-embed-logging-juli:8.5.2")
     implementation("org.apache.tomcat.embed:tomcat-embed-jasper:$tomcatVersion")
