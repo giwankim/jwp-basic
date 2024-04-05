@@ -2,6 +2,7 @@ package com.giwankim.core.mvc;
 
 import com.giwankim.next.controller.HomeController;
 import com.giwankim.next.controller.qna.AddAnswerController;
+import com.giwankim.next.controller.qna.DeleteAnswerController;
 import com.giwankim.next.controller.qna.ShowController;
 import com.giwankim.next.controller.user.*;
 import com.giwankim.next.dao.AnswerDao;
@@ -43,6 +44,7 @@ public class RequestMapping {
     mapping.put("/user/update", new UpdateUserController(userDao));
     mapping.put("/qna/show", new ShowController(questionDao, answerDao));
     mapping.put("/api/qna/addAnswer", new AddAnswerController(answerDao));
+    mapping.put("/api/qna/deleteAnswer", new DeleteAnswerController(answerDao));
 
     logger.info("Request mapping initialized");
     mapping.forEach((path, controller) -> logger.info("Path : {}, Controller : {}", path, controller.getClass()));
