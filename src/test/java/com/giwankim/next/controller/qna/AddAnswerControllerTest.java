@@ -41,7 +41,7 @@ class AddAnswerControllerTest {
   }
 
   @Test
-  @DisplayName("")
+  @DisplayName("응답을 저장한다.")
   void shouldSaveAnswer() throws ServletException, IOException {
     when(request.getParameter("writer")).thenReturn("사용자");
     when(request.getParameter("contents")).thenReturn("응답 컨텐츠입니다.");
@@ -58,6 +58,7 @@ class AddAnswerControllerTest {
   }
 
   @Test
+  @DisplayName("저장된 응답을 응답 바디에 전송한다.")
   void shouldRespondWithSavedAnswer() throws IOException, ServletException {
     Answer answer = anAnswer().build();
     ObjectMapper objectMapper = new ObjectMapper();
