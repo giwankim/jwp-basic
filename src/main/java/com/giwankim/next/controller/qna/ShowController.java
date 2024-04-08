@@ -1,6 +1,8 @@
 package com.giwankim.next.controller.qna;
 
 import com.giwankim.core.mvc.Controller;
+import com.giwankim.core.mvc.JspView;
+import com.giwankim.core.mvc.View;
 import com.giwankim.next.dao.AnswerDao;
 import com.giwankim.next.dao.QuestionDao;
 import com.giwankim.next.model.Answer;
@@ -22,12 +24,12 @@ public class ShowController implements Controller {
   }
 
   @Override
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     long questionId = Long.parseLong(request.getParameter("questionId"));
     Question question = questionDao.findById(questionId).orElse(null);
     List<Answer> answers = answerDao.findAllByQuestionId(questionId);
     request.setAttribute("question", question);
     request.setAttribute("answers", answers);
-    return "/qna/show.jsp";
+    return JspView.from("/qna/show.jsp");
   }
 }

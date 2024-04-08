@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,20 +18,21 @@ import java.util.*;
 
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class JsonViewTest {
+  @Mock
   HttpServletRequest request;
 
+  @Mock
   HttpServletResponse response;
 
+  @Mock
   PrintWriter writer;
 
   JsonView sut;
 
   @BeforeEach
   void setUp() {
-    request = mock(HttpServletRequest.class);
-    response = mock(HttpServletResponse.class);
-    writer = mock(PrintWriter.class);
     sut = new JsonView();
   }
 
@@ -36,7 +40,9 @@ class JsonViewTest {
   void shouldSetContentType() throws Exception {
     when(request.getAttributeNames()).thenReturn(Collections.emptyEnumeration());
     when(response.getWriter()).thenReturn(writer);
+
     sut.render(request, response);
+
     verify(response).setContentType(MediaType.APPLICATION_JSON_VALUE);
   }
 
@@ -49,7 +55,9 @@ class JsonViewTest {
     when(request.getAttribute("attribute1")).thenReturn("value1");
     when(request.getAttribute("attribute2")).thenReturn("value2");
     when(response.getWriter()).thenReturn(writer);
-    Map<String, Object> model = Map.of("attribute1", "value1", "attribute2", "value2");
+    Map<String, Object> model = new LinkedHashMap<>();
+    model.put("attribute1", "value1");
+    model.put("attribute2", "value2");
 
     sut.render(request, response);
 

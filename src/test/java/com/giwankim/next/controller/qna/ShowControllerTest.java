@@ -1,5 +1,7 @@
 package com.giwankim.next.controller.qna;
 
+import com.giwankim.core.mvc.JspView;
+import com.giwankim.core.mvc.View;
 import com.giwankim.next.dao.AnswerDao;
 import com.giwankim.next.dao.QuestionDao;
 import com.giwankim.next.model.Answer;
@@ -31,16 +33,16 @@ class ShowControllerTest {
   @Mock
   AnswerDao answerDao;
 
+  @Mock
   HttpServletRequest request;
 
+  @Mock
   HttpServletResponse response;
 
   ShowController sut;
 
   @BeforeEach
   void setUp() {
-    request = mock(HttpServletRequest.class);
-    response = mock(HttpServletResponse.class);
     sut = new ShowController(questionDao, answerDao);
   }
 
@@ -49,25 +51,25 @@ class ShowControllerTest {
   void shouldReturnQnAShowPage() throws ServletException, IOException {
     when(request.getParameter("questionId")).thenReturn("1");
 
-    String view = sut.execute(request, response);
+    View view = sut.handleRequest(request, response);
 
-    assertThat(view).isEqualTo("/qna/show.jsp");
+    assertThat(view).isEqualTo(JspView.from("/qna/show.jsp"));
   }
 
   @Test
-  @DisplayName("Request의 \"question\" 속성을 세팅한다.")
+  @DisplayName("Request의 question 속성을 세팅한다.")
   void shouldSetQuestions() throws ServletException, IOException {
     Question question = aQuestion().questionId(1L).build();
     when(request.getParameter("questionId")).thenReturn("1");
     when(questionDao.findById(1L)).thenReturn(Optional.of(question));
 
-    sut.execute(request, response);
+    sut.handleRequest(request, response);
 
     verify(request).setAttribute("question", question);
   }
 
   @Test
-  @DisplayName("Request 의\"answers\" 속성을 세팅한다.")
+  @DisplayName("Request의 answers 속성을 세팅한다.")
   void shouldSetAnswers() throws ServletException, IOException {
     Question question = aQuestion().build();
     List<Answer> answers = List.of(
@@ -76,7 +78,7 @@ class ShowControllerTest {
     when(request.getParameter("questionId")).thenReturn("1");
     when(answerDao.findAllByQuestionId(question.getQuestionId())).thenReturn(answers);
 
-    sut.execute(request, response);
+    sut.handleRequest(request, response);
 
     verify(request).setAttribute("answers", answers);
   }

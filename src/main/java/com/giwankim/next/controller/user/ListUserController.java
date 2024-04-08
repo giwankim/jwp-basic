@@ -1,6 +1,8 @@
 package com.giwankim.next.controller.user;
 
 import com.giwankim.core.mvc.Controller;
+import com.giwankim.core.mvc.JspView;
+import com.giwankim.core.mvc.View;
 import com.giwankim.next.controller.UserSessionUtils;
 import com.giwankim.next.dao.UserDao;
 
@@ -8,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 
 public class ListUserController implements Controller {
   private final UserDao userDao;
@@ -18,11 +19,11 @@ public class ListUserController implements Controller {
   }
 
   @Override
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     if (!UserSessionUtils.isLoggedIn(request.getSession())) {
-      return "redirect:/user/loginForm";
+      return new JspView("redirect:/user/loginForm");
     }
     request.setAttribute("users", userDao.findAll());
-    return "/user/list.jsp";
+    return JspView.from("/user/list.jsp");
   }
 }

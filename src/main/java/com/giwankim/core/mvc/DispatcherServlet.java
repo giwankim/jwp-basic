@@ -5,7 +5,6 @@ import com.giwankim.next.controller.user.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,8 +17,6 @@ import static org.springframework.http.HttpStatus.*;
 @WebServlet(name = "dispatcher", urlPatterns = "/", loadOnStartup = 1)
 public class DispatcherServlet extends HttpServlet {
   private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
-
-  public static final String DEFAULT_REDIRECT_PREFIX = "redirect:";
 
   private RequestMapping requestMapping;
 
@@ -41,10 +38,8 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     try {
-      String viewName = controller.execute(request, response);
-      if (viewName != null) {
-        move(viewName, request, response);
-      }
+      View view = controller.handleRequest(request, response);
+      view.render(request, response);
     } catch (UnauthorizedException uae) {
       response.sendError(UNAUTHORIZED.value(), UNAUTHORIZED.getReasonPhrase());
     } catch (UserNotFoundException unfe) {
@@ -53,14 +48,5 @@ public class DispatcherServlet extends HttpServlet {
       logger.error("Exception : ", e);
       response.sendError(INTERNAL_SERVER_ERROR.value(), INTERNAL_SERVER_ERROR.getReasonPhrase());
     }
-  }
-
-  private void move(String viewName, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-    if (viewName.startsWith(DEFAULT_REDIRECT_PREFIX)) {
-      response.sendRedirect(viewName.substring(DEFAULT_REDIRECT_PREFIX.length()));
-      return;
-    }
-    RequestDispatcher rd = request.getRequestDispatcher(viewName);
-    rd.forward(request, response);
   }
 }
