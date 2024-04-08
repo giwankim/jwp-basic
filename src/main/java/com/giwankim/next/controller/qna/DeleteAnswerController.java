@@ -1,9 +1,8 @@
 package com.giwankim.next.controller.qna;
 
 import com.giwankim.core.jdbc.DataAccessException;
-import com.giwankim.core.mvc.Controller;
-import com.giwankim.core.mvc.JsonView;
-import com.giwankim.core.mvc.View;
+import com.giwankim.core.mvc.AbstractController;
+import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.controller.Result;
 import com.giwankim.next.dao.AnswerDao;
 
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class DeleteAnswerController implements Controller {
+public class DeleteAnswerController extends AbstractController {
   private final AnswerDao answerDao;
 
   public DeleteAnswerController(AnswerDao answerDao) {
@@ -20,14 +19,16 @@ public class DeleteAnswerController implements Controller {
   }
 
   @Override
-  public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     long answerId = Long.parseLong(request.getParameter("answerId"));
+    Result result;
     try {
       answerDao.delete(answerId);
-      request.setAttribute("result", Result.ok());
+      result = Result.ok();
     } catch (DataAccessException dae) {
-      request.setAttribute("result", Result.fail(dae.getMessage()));
+      result = Result.fail(dae.getMessage());
     }
-    return new JsonView();
+    return jsonView()
+      .addObject("result", result);
   }
 }

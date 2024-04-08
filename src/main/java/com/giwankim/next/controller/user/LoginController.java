@@ -1,8 +1,7 @@
 package com.giwankim.next.controller.user;
 
-import com.giwankim.core.mvc.Controller;
-import com.giwankim.core.mvc.JspView;
-import com.giwankim.core.mvc.View;
+import com.giwankim.core.mvc.AbstractController;
+import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
 
@@ -15,7 +14,7 @@ import java.util.Optional;
 
 import static com.giwankim.next.controller.UserSessionUtils.SESSION_USER_KEY;
 
-public class LoginController implements Controller {
+public class LoginController extends AbstractController {
   private final UserDao userDao;
 
   public LoginController(UserDao userDao) {
@@ -23,21 +22,21 @@ public class LoginController implements Controller {
   }
 
   @Override
-  public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String userId = request.getParameter("userId");
     String password = request.getParameter("password");
     Optional<User> optionalUser = userDao.findByUserId(userId);
     if (optionalUser.isEmpty()) {
-      request.setAttribute("loginFailed", true);
-      return JspView.from("/user/login.jsp");
+      return jspView("/user/login.jsp")
+        .addObject("loginFailed", true);
     }
     User user = optionalUser.get();
     if (!user.comparePasswords(password)) {
-      request.setAttribute("loginFailed", true);
-      return JspView.from("/user/login.jsp");
+      return jspView("/user/login.jsp")
+        .addObject("loginFailed", true);
     }
     HttpSession session = request.getSession();
     session.setAttribute(SESSION_USER_KEY, user);
-    return JspView.from("redirect:/");
+    return jspView("redirect:/");
   }
 }

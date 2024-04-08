@@ -38,10 +38,9 @@ class JsonViewTest {
 
   @Test
   void shouldSetContentType() throws Exception {
-    when(request.getAttributeNames()).thenReturn(Collections.emptyEnumeration());
     when(response.getWriter()).thenReturn(writer);
 
-    sut.render(request, response);
+    sut.render(Collections.emptyMap(), request, response);
 
     verify(response).setContentType(MediaType.APPLICATION_JSON_VALUE);
   }
@@ -51,15 +50,12 @@ class JsonViewTest {
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    when(request.getAttributeNames()).thenReturn(Collections.enumeration(List.of("attribute1", "attribute2")));
-    when(request.getAttribute("attribute1")).thenReturn("value1");
-    when(request.getAttribute("attribute2")).thenReturn("value2");
     when(response.getWriter()).thenReturn(writer);
     Map<String, Object> model = new LinkedHashMap<>();
     model.put("attribute1", "value1");
     model.put("attribute2", "value2");
 
-    sut.render(request, response);
+    sut.render(model, request, response);
 
     verify(writer).write(objectMapper.writeValueAsString(model));
   }

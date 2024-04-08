@@ -3,6 +3,7 @@ package com.giwankim.core.mvc;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 import java.util.Objects;
 
 public class JspView implements View {
@@ -19,12 +20,13 @@ public class JspView implements View {
   }
 
   @Override
-  public void render(HttpServletRequest request, HttpServletResponse response) throws Exception {
+  public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
     if (viewName.startsWith(DEFAULT_REDIRECT_PREFIX)) {
       String redirectView = viewName.substring(DEFAULT_REDIRECT_PREFIX.length());
       response.sendRedirect(redirectView);
       return;
     }
+    model.forEach(request::setAttribute);
     RequestDispatcher rd = request.getRequestDispatcher(viewName);
     rd.forward(request, response);
   }

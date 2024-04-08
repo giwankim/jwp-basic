@@ -1,5 +1,7 @@
 package com.giwankim.next.controller.qna;
 
+import com.giwankim.core.jdbc.DataAccessException;
+import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.controller.Result;
 import com.giwankim.next.dao.AnswerDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DeleteAnswerControllerTest {
@@ -46,12 +48,23 @@ class DeleteAnswerControllerTest {
   }
 
   @Test
-  @DisplayName("응답 바디에 결과를 반환한다")
-  void shouldWriteResultToResponseBody() throws ServletException, IOException {
+  @DisplayName("삭제 성공시 응답 바디에 성공 결과를 반환한다.")
+  void shouldAddSuccessResultWhenDeleteSucceeds() throws ServletException, IOException {
     when(request.getParameter("answerId")).thenReturn("1");
 
-    sut.handleRequest(request, response);
+    ModelAndView mv = sut.handleRequest(request, response);
 
-    verify(request).setAttribute("result", Result.ok());
+    assertThat(mv.getModel()).containsEntry("result", Result.ok());
+  }
+
+  @Test
+  @DisplayName("삭제 실패시 실패 결과를 반환한다.")
+  void shouldAddFailResultWhenDeleteFails() throws ServletException, IOException {
+    when(request.getParameter("answerId")).thenReturn("99");
+    doThrow(new DataAccessException("삭제 실패")).when(answerDao).delete(99L);
+
+    ModelAndView mv = sut.handleRequest(request, response);
+
+    assertThat(mv.getModel()).containsEntry("result", Result.fail("삭제 실패"));
   }
 }

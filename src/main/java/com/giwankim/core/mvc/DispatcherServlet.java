@@ -38,8 +38,9 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     try {
-      View view = controller.handleRequest(request, response);
-      view.render(request, response);
+      ModelAndView mv = controller.handleRequest(request, response);
+      View view = mv.getView();
+      view.render(mv.getModel(), request, response);
     } catch (UnauthorizedException uae) {
       response.sendError(UNAUTHORIZED.value(), UNAUTHORIZED.getReasonPhrase());
     } catch (UserNotFoundException unfe) {

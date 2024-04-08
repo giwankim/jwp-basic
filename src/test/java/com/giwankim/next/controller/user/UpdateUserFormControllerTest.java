@@ -1,7 +1,7 @@
 package com.giwankim.next.controller.user;
 
 import com.giwankim.core.mvc.JspView;
-import com.giwankim.core.mvc.View;
+import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,18 +49,18 @@ class UpdateUserFormControllerTest {
   @DisplayName("수정 폼을 서빙한다.")
   void shouldReturnUpdateForm() throws ServletException, IOException {
     User user = aUser().build();
-    when(request.getParameter("userId")).thenReturn("userId");
+    when(request.getParameter("userId")).thenReturn(user.getUserId());
     when(userDao.findByUserId("userId")).thenReturn(Optional.of(user));
     when(request.getSession()).thenReturn(session);
     when(session.getAttribute(SESSION_USER_KEY)).thenReturn(user);
 
-    View view = sut.handleRequest(request, response);
+    ModelAndView mv = sut.handleRequest(request, response);
 
-    assertThat(view).isEqualTo(JspView.from("/user/updateForm.jsp"));
+    assertThat(mv.getView()).isEqualTo(JspView.from("/user/updateForm.jsp"));
   }
 
   @Test
-  @DisplayName("User가 존재하지 않을 경우 exception을 던진다.")
+  @DisplayName("유저가 존재하지 않을 경우 예외를 던진다.")
   void shouldThrowExceptionWhenUserNotFound() {
     when(request.getParameter("userId")).thenReturn("user-does-not-exist");
 
@@ -69,14 +69,14 @@ class UpdateUserFormControllerTest {
   }
 
   @Test
-  @DisplayName("세션의 유저와 수정하려는 유저가 다른 경우 exception을 던진다.")
+  @DisplayName("세션의 유저와 수정 대상자가 다른 경우 예외를 던진다.")
   void shouldThrowExceptionWhenUserSessionIsDifferent() {
     User user = aUser().build();
-    User anotherUser = aUser().userId("different-user").build();
-    when(request.getParameter("userId")).thenReturn("userId");
+    User another = aUser().userId("different-user").build();
+    when(request.getParameter("userId")).thenReturn(user.getUserId());
     when(userDao.findByUserId("userId")).thenReturn(Optional.of(user));
     when(request.getSession()).thenReturn(session);
-    when(session.getAttribute(SESSION_USER_KEY)).thenReturn(anotherUser);
+    when(session.getAttribute(SESSION_USER_KEY)).thenReturn(another);
 
     assertThatExceptionOfType(UnauthorizedException.class)
       .isThrownBy(() -> sut.handleRequest(request, response));
