@@ -1,7 +1,7 @@
 package com.giwankim.next.controller.user;
 
 import com.giwankim.core.mvc.JspView;
-import com.giwankim.core.mvc.View;
+import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import java.util.Optional;
 import static com.giwankim.Fixtures.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileControllerTest {
@@ -47,9 +47,9 @@ class ProfileControllerTest {
     when(request.getParameter("userId")).thenReturn("userId");
     when(userDao.findByUserId("userId")).thenReturn(Optional.of(aUser().build()));
 
-    View actual = sut.handleRequest(request, response);
+    ModelAndView mv = sut.handleRequest(request, response);
 
-    assertThat(actual).isEqualTo(JspView.from("/user/profile.jsp"));
+    assertThat(mv.getView()).isEqualTo(JspView.from("/user/profile.jsp"));
   }
 
   @Test
@@ -59,9 +59,9 @@ class ProfileControllerTest {
     when(request.getParameter("userId")).thenReturn("userId");
     when(userDao.findByUserId("userId")).thenReturn(Optional.of(user));
 
-    sut.handleRequest(request, response);
+    ModelAndView mv = sut.handleRequest(request, response);
 
-    verify(request).setAttribute("user", user);
+    assertThat(mv.getModel()).containsEntry("user", user);
   }
 
   @Test

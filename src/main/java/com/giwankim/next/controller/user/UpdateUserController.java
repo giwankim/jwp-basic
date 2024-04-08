@@ -1,8 +1,7 @@
 package com.giwankim.next.controller.user;
 
-import com.giwankim.core.mvc.Controller;
-import com.giwankim.core.mvc.JspView;
-import com.giwankim.core.mvc.View;
+import com.giwankim.core.mvc.AbstractController;
+import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.controller.UserSessionUtils;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class UpdateUserController implements Controller {
+public class UpdateUserController extends AbstractController {
   private static final Logger logger = LoggerFactory.getLogger(UpdateUserController.class);
 
   private final UserDao userDao;
@@ -24,7 +23,7 @@ public class UpdateUserController implements Controller {
   }
 
   @Override
-  public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String userId = request.getParameter("userId");
     User user = userDao.findByUserId(userId)
       .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
@@ -40,6 +39,6 @@ public class UpdateUserController implements Controller {
     userDao.update(updateUser);
     logger.debug("update user : {}", updateUser);
 
-    return JspView.from("redirect:/");
+    return jspView("redirect:/");
   }
 }

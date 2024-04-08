@@ -1,7 +1,7 @@
 package com.giwankim.next.controller.user;
 
 import com.giwankim.core.mvc.JspView;
-import com.giwankim.core.mvc.View;
+import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.controller.UserSessionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LogoutControllerTest {
@@ -42,9 +43,9 @@ class LogoutControllerTest {
   void shouldRedirectToRoot() throws ServletException, IOException {
     when(request.getSession()).thenReturn(session);
 
-    View view = sut.handleRequest(request, response);
+    ModelAndView mv = sut.handleRequest(request, response);
 
-    assertThat(view).isEqualTo(JspView.from("redirect:/"));
+    assertThat(mv.getView()).isEqualTo(JspView.from("redirect:/"));
   }
 
   @Test

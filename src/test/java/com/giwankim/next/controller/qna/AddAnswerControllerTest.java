@@ -1,5 +1,6 @@
 package com.giwankim.next.controller.qna;
 
+import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.dao.AnswerDao;
 import com.giwankim.next.model.Answer;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,13 +16,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.giwankim.Fixtures.anAnswer;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AddAnswerControllerTest {
+  @Mock
   HttpServletRequest request;
 
+  @Mock
   HttpServletResponse response;
 
   @Mock
@@ -31,8 +35,6 @@ class AddAnswerControllerTest {
 
   @BeforeEach
   void setUp() {
-    request = mock(HttpServletRequest.class);
-    response = mock(HttpServletResponse.class);
     sut = new AddAnswerController(answerDao);
   }
 
@@ -61,8 +63,8 @@ class AddAnswerControllerTest {
     when(request.getParameter("questionId")).thenReturn(String.valueOf(answer.getQuestionId()));
     when(answerDao.insert(any(Answer.class))).thenReturn(answer);
 
-    sut.handleRequest(request, response);
+    ModelAndView mv = sut.handleRequest(request, response);
 
-    verify(request).setAttribute("answer", answer);
+    assertThat(mv.getModel()).containsEntry("answer", answer);
   }
 }
