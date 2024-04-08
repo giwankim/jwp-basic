@@ -1,6 +1,8 @@
 package com.giwankim.next.controller.user;
 
 import com.giwankim.core.mvc.Controller;
+import com.giwankim.core.mvc.JspView;
+import com.giwankim.core.mvc.View;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
 import org.slf4j.Logger;
@@ -21,7 +23,7 @@ public class CreateUserController implements Controller {
   }
 
   @Override
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     User user = new User(
       request.getParameter("userId"),
       request.getParameter("password"),
@@ -29,6 +31,6 @@ public class CreateUserController implements Controller {
       request.getParameter("email"));
     logger.debug("user : {}", user);
     userDao.insert(user);
-    return "redirect:/";
+    return JspView.from("redirect:/");
   }
 }
