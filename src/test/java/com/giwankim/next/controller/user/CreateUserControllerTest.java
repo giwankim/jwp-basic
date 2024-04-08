@@ -2,6 +2,7 @@ package com.giwankim.next.controller.user;
 
 import com.giwankim.core.jdbc.ConnectionManager;
 import com.giwankim.core.mvc.JspView;
+import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.core.mvc.View;
 import com.giwankim.next.dao.UserDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,12 +38,10 @@ class CreateUserControllerTest {
 
   CreateUserController sut;
 
-
   @BeforeEach
   void setUp() {
     ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
     populator.addScript(new ClassPathResource("schema.sql"));
-    populator.addScript(new ClassPathResource("data.sql"));
     DatabasePopulatorUtils.execute(populator, ConnectionManager.getDatasource());
     sut = new CreateUserController(userDao);
   }
@@ -55,9 +54,9 @@ class CreateUserControllerTest {
     when(request.getParameter("name")).thenReturn("name");
     when(request.getParameter("email")).thenReturn("email");
 
-    View view = sut.handleRequest(request, response);
+    ModelAndView mv = sut.handleRequest(request, response);
 
-    assertThat(view).isEqualTo(JspView.from("redirect:/"));
+    assertThat(mv.getView()).isEqualTo(JspView.from("redirect:/"));
   }
 
   @Test

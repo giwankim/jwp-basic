@@ -7,5 +7,5 @@ import java.io.IOException;
 
 @FunctionalInterface
 public interface Controller {
-  View handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+  ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 }
