@@ -1,6 +1,8 @@
 package com.giwankim.next.controller.user;
 
 import com.giwankim.core.mvc.Controller;
+import com.giwankim.core.mvc.JspView;
+import com.giwankim.core.mvc.View;
 import com.giwankim.next.controller.UserSessionUtils;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
@@ -18,7 +20,7 @@ public class UpdateUserFormController implements Controller {
   }
 
   @Override
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String userId = request.getParameter("userId");
     User user = userDao.findByUserId(userId)
       .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
@@ -26,6 +28,6 @@ public class UpdateUserFormController implements Controller {
       throw new UnauthorizedException("다른 사용자의 정보를 수정할 수 없습니다.");
     }
     request.setAttribute("user", user);
-    return "/user/updateForm.jsp";
+    return JspView.from("/user/updateForm.jsp");
   }
 }

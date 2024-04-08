@@ -1,6 +1,8 @@
 package com.giwankim.next.controller;
 
 import com.giwankim.core.mvc.Controller;
+import com.giwankim.core.mvc.JspView;
+import com.giwankim.core.mvc.View;
 import com.giwankim.next.dao.QuestionDao;
 
 import javax.servlet.ServletException;
@@ -16,8 +18,8 @@ public class HomeController implements Controller {
   }
 
   @Override
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     request.setAttribute("questions", questionDao.findAll());
-    return "home.jsp";
+    return JspView.from("home.jsp");
   }
 }
