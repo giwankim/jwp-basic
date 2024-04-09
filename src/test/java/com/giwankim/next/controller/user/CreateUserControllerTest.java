@@ -3,8 +3,8 @@ package com.giwankim.next.controller.user;
 import com.giwankim.core.jdbc.ConnectionManager;
 import com.giwankim.core.mvc.JspView;
 import com.giwankim.core.mvc.ModelAndView;
-import com.giwankim.core.mvc.View;
 import com.giwankim.next.dao.UserDao;
+import com.giwankim.next.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,13 +62,14 @@ class CreateUserControllerTest {
   @Test
   @DisplayName("사용자를 저장한다.")
   void shouldPersistUser() throws ServletException, IOException {
-    when(request.getParameter("userId")).thenReturn("userId");
-    when(request.getParameter("password")).thenReturn("password");
-    when(request.getParameter("name")).thenReturn("name");
-    when(request.getParameter("email")).thenReturn("email");
+    User user = aUser().build();
+    when(request.getParameter("userId")).thenReturn(user.getUserId());
+    when(request.getParameter("password")).thenReturn(user.getPassword());
+    when(request.getParameter("name")).thenReturn(user.getName());
+    when(request.getParameter("email")).thenReturn(user.getEmail());
 
     sut.handleRequest(request, response);
 
-    verify(userDao).insert(aUser().build());
+    verify(userDao).insert(user);
   }
 }
