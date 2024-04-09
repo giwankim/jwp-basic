@@ -45,6 +45,7 @@ public class RequestMapping {
     mapping.put("/qna/create", new CreateQuestionController(questionDao));
     mapping.put("/api/qna/addAnswer", new AddAnswerController(answerDao));
     mapping.put("/api/qna/deleteAnswer", new DeleteAnswerController(answerDao));
+    mapping.put("/api/qna/list", new ApiListQuestionsController(questionDao));
 
     logger.info("Request mapping initialized");
     mapping.forEach((path, controller) -> logger.info("Path : {}, Controller : {}", path, controller.getClass()));
