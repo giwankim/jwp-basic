@@ -12,39 +12,36 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.giwankim.Fixtures.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserDaoTest {
 
-  private UserDao userDao;
+  private UserDao sut;
 
   @BeforeEach
   void setUp() {
     ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
     populator.addScript(new ClassPathResource("schema.sql"));
-    populator.addScript(new ClassPathResource("data.sql"));
     DatabasePopulatorUtils.execute(populator, ConnectionManager.getDatasource());
-
-    userDao = new UserDao();
+    sut = new UserDao();
   }
 
   @Test
   void shouldInsert() throws SQLException {
-    User user = new User("userId", "password", "name", "test@example.com");
+    User user = aUser().build();
 
-    userDao.insert(user);
+    User actual = sut.insert(user);
 
-    assertThat(userDao.findByUserId("userId"))
-      .isPresent()
-      .contains(user);
+    assertThat(actual).isEqualTo(user);
   }
 
   @Test
   void shouldFindUserById() throws SQLException {
-    User user = new User("userId", "password", "name", "test@example.com");
-    userDao.insert(user);
+    User user = aUser().build();
+    sut.insert(user);
 
-    Optional<User> actual = userDao.findByUserId("userId");
+    Optional<User> actual = sut.findByUserId(user.getUserId());
 
     assertThat(actual)
       .isPresent()
@@ -53,25 +50,36 @@ class UserDaoTest {
 
   @Test
   void shouldReturnEmptyWhenUserIdDoesNotExist() throws SQLException {
-    assertThat(userDao.findByUserId("does-not-exist")).isEmpty();
+    assertThat(sut.findByUserId("does-not-exist"))
+      .isEmpty();
   }
 
   @Test
   void shouldFindAll() throws SQLException {
-    List<User> users = userDao.findAll();
-    assertThat(users).containsExactly(
-      new User("admin", "password", "자바지기", "admin@slipp.net"));
+    User user1 = aUser()
+      .userId("user1")
+      .build();
+    User user2 = aUser()
+      .userId("user2")
+      .build();
+    sut.insert(user1);
+    sut.insert(user2);
+
+    List<User> users = sut.findAll();
+    assertThat(users).containsExactly(user1, user2);
   }
 
   @Test
   void shouldUpdate() throws SQLException {
-    User user = new User("userId", "password", "name", "test@example.com");
-    userDao.insert(user);
-    User expected = new User("userId", "new-password", "new-name", "new-test@example.com");
-    userDao.update(expected);
+    User user = aUser().build();
+    sut.insert(user);
+    User expected = aUser()
+      .name("updated")
+      .email("updated@example.com")
+      .build();
 
-    assertThat(userDao.findByUserId("userId"))
-      .isPresent()
-      .contains(expected);
+    User actual = sut.update(expected);
+
+    assertThat(actual).isEqualTo(expected);
   }
 }

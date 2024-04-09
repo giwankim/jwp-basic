@@ -1,6 +1,7 @@
-package com.giwankim.next.controller;
+package com.giwankim.next.controller.user;
 
 import com.giwankim.core.mvc.Controller;
+import com.giwankim.next.controller.UserSessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

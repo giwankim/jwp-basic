@@ -1,4 +1,4 @@
-package com.giwankim.next.controller;
+package com.giwankim.next.controller.user;
 
 public class UnauthorizedException extends RuntimeException {
   public UnauthorizedException() {
