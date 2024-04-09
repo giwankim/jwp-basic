@@ -21,6 +21,10 @@ public class Question {
     this.countOfAnswers = countOfAnswers;
   }
 
+  public Question(String writer, String title, String contents) {
+    this(0L, writer, title, contents, LocalDateTime.now(), 0);
+  }
+
   public long getQuestionId() {
     return questionId;
   }

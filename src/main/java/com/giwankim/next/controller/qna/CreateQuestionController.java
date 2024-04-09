@@ -1,0 +1,36 @@
+package com.giwankim.next.controller.qna;
+
+import com.giwankim.core.mvc.AbstractController;
+import com.giwankim.core.mvc.ModelAndView;
+import com.giwankim.next.dao.QuestionDao;
+import com.giwankim.next.model.Question;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class CreateQuestionController extends AbstractController {
+  public static final Logger logger = LoggerFactory.getLogger(CreateQuestionController.class);
+
+  private final QuestionDao questionDao;
+
+  public CreateQuestionController(QuestionDao questionDao) {
+    this.questionDao = questionDao;
+  }
+
+  @Override
+  public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    Question question = new Question(
+      request.getParameter("writer"),
+      request.getParameter("title"),
+      request.getParameter("contents"));
+    logger.debug("question : {}", question);
+
+    questionDao.insert(question);
+
+    return jspView("redirect:/");
+  }
+}
