@@ -1,7 +1,6 @@
 package com.giwankim.next.dao;
 
 import com.giwankim.core.jdbc.ConnectionManager;
-import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +9,7 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,21 +29,49 @@ class UserDaoTest {
   }
 
   @Test
-  void shouldInsertUser() throws SQLException {
-    User user = new User(
-      "userId",
-      "password",
-      "name",
-      "expected@test.com");
-    Optional<User> expected = Optional.of(user);
+  void shouldInsert() throws SQLException {
+    User user = new User("userId", "password", "name", "test@example.com");
 
     userDao.insert(user);
 
-    assertThat(userDao.findById("userId")).isEqualTo(expected);
+    assertThat(userDao.findByUserId("userId"))
+      .isPresent()
+      .contains(user);
+  }
+
+  @Test
+  void shouldFindUserById() throws SQLException {
+    User user = new User("userId", "password", "name", "test@example.com");
+    userDao.insert(user);
+
+    Optional<User> actual = userDao.findByUserId("userId");
+
+    assertThat(actual)
+      .isPresent()
+      .contains(user);
   }
 
   @Test
   void shouldReturnEmptyWhenUserIdDoesNotExist() throws SQLException {
-    assertThat(userDao.findById("doesNotExist")).isEmpty();
+    assertThat(userDao.findByUserId("does-not-exist")).isEmpty();
+  }
+
+  @Test
+  void shouldFindAll() throws SQLException {
+    List<User> users = userDao.findAll();
+    assertThat(users).containsExactly(
+      new User("admin", "password", "자바지기", "admin@slipp.net"));
+  }
+
+  @Test
+  void shouldUpdate() throws SQLException {
+    User user = new User("userId", "password", "name", "test@example.com");
+    userDao.insert(user);
+    User expected = new User("userId", "new-password", "new-name", "new-test@example.com");
+    userDao.update(expected);
+
+    assertThat(userDao.findByUserId("userId"))
+      .isPresent()
+      .contains(expected);
   }
 }

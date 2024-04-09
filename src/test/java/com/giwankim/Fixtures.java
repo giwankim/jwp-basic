@@ -1,4 +1,4 @@
-package com.giwankim.next;
+package com.giwankim;
 
 import com.giwankim.next.model.User;
 

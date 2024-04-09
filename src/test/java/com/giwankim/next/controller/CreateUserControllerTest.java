@@ -1,19 +1,21 @@
 package com.giwankim.next.controller;
 
-import com.giwankim.core.db.Database;
-import org.junit.jupiter.api.AfterEach;
+import com.giwankim.core.jdbc.ConnectionManager;
+import com.giwankim.next.dao.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.giwankim.next.Fixtures.aUser;
+import static com.giwankim.Fixtures.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class CreateUserControllerTest {
   HttpServletRequest request;
@@ -22,16 +24,19 @@ class CreateUserControllerTest {
 
   CreateUserController sut;
 
+  UserDao userDao;
+
   @BeforeEach
   void setUp() {
+    ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+    populator.addScript(new ClassPathResource("schema.sql"));
+    populator.addScript(new ClassPathResource("data.sql"));
+    DatabasePopulatorUtils.execute(populator, ConnectionManager.getDatasource());
+
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
-    sut = new CreateUserController();
-  }
-
-  @AfterEach
-  void tearDown() {
-    Database.deleteAll();
+    userDao = mock(UserDao.class);
+    sut = new CreateUserController(userDao);
   }
 
   @Test
@@ -55,8 +60,6 @@ class CreateUserControllerTest {
 
     sut.execute(request, response);
 
-    assertThat(Database.findById("userId"))
-      .isPresent()
-      .contains(aUser().build());
+    verify(userDao).insert(aUser().build());
   }
 }

@@ -1,8 +1,7 @@
 package com.giwankim.next.controller;
 
-import com.giwankim.core.db.Database;
+import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,8 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
-import static com.giwankim.next.Fixtures.aUser;
+import static com.giwankim.Fixtures.aUser;
 import static com.giwankim.next.controller.UserSessionUtils.SESSION_USER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -26,6 +26,8 @@ class UpdateUserFormControllerTest {
 
   HttpSession session;
 
+  UserDao userDao;
+
   UpdateUserFormController sut;
 
   @BeforeEach
@@ -33,18 +35,14 @@ class UpdateUserFormControllerTest {
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
     session = mock(HttpSession.class);
-    sut = new UpdateUserFormController();
-    Database.addUser(aUser().build());
-  }
-
-  @AfterEach
-  void tearDown() {
-    Database.deleteAll();
+    userDao = mock(UserDao.class);
+    sut = new UpdateUserFormController(userDao);
   }
 
   @Test
   void shouldReturnUpdateForm() throws ServletException, IOException {
     when(request.getParameter("userId")).thenReturn("userId");
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(aUser().build()));
     when(request.getSession()).thenReturn(session);
     when(session.getAttribute(SESSION_USER_KEY)).thenReturn(aUser().build());
 
@@ -62,9 +60,10 @@ class UpdateUserFormControllerTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenUnauthorized() {
+  void shouldThrowExceptionWhenUserSessionIsDifferent() {
     User anotherUser = aUser().userId("different-user").build();
     when(request.getParameter("userId")).thenReturn("userId");
+    when(userDao.findByUserId("userId")).thenReturn(Optional.of(aUser().build()));
     when(request.getSession()).thenReturn(session);
     when(session.getAttribute(SESSION_USER_KEY)).thenReturn(anotherUser);
 
