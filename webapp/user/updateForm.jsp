@@ -13,8 +13,8 @@
   <div class="col-md-6 col-md-offset-3">
     <div class="panel panel-default content-main">
       <form name="question" method="post" action="/user/update">
+        <input type="hidden" name="userId" value="${user.userId}"/>
         <div class="form-group">
-          <input type="hidden" name="userId" value="${user.userId}"/>
           <label>사용자 아이디</label>
           ${user.userId}
         </div>
