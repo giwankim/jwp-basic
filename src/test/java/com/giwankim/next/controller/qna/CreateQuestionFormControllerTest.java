@@ -3,6 +3,7 @@ package com.giwankim.next.controller.qna;
 import com.giwankim.core.mvc.JspView;
 import com.giwankim.core.mvc.ModelAndView;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -31,6 +32,7 @@ class CreateQuestionFormControllerTest {
   }
 
   @Test
+  @DisplayName("질문하기 페이지를 서빙한다.")
   void shouldReturnQuestionForm() throws ServletException, IOException {
     ModelAndView mv = sut.handleRequest(request, response);
     assertThat(mv.getView()).isEqualTo(JspView.from("/qna/form.jsp"));
