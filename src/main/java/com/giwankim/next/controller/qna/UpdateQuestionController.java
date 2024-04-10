@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class UpdateQuestionFormController extends AbstractController {
+public class UpdateQuestionController extends AbstractController {
   private final QuestionDao questionDao;
 
-  public UpdateQuestionFormController(QuestionDao questionDao) {
+  public UpdateQuestionController(QuestionDao questionDao) {
     this.questionDao = questionDao;
   }
 
@@ -32,10 +32,19 @@ public class UpdateQuestionFormController extends AbstractController {
 
     User user = UserSessionUtils.getUserFromSession(request.getSession());
     if (!user.isWriter(question)) {
-      throw new UnauthorizedException("질문 작성자만이 수정할 수 있습니다.");
+      throw new UnauthorizedException("질문의 작성자만 수정할 수 있습니다.");
     }
 
-    return jspView("/qna/updateForm.jsp")
-      .addObject("question", question);
+    Question updateQuestion = new Question(
+      questionId,
+      question.getWriter(),
+      request.getParameter("title"),
+      request.getParameter("contents"),
+      question.getCreatedDate(),
+      question.getCountOfAnswers()
+    );
+    questionDao.update(updateQuestion);
+
+    return jspView("redirect:/");
   }
 }
