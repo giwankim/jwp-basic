@@ -79,4 +79,10 @@ public class QuestionDao {
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     jdbcTemplate.update(sql, questionId);
   }
+
+  public void incrementAnswerCount(long questionId) {
+    final String sql = "UPDATE question SET count_of_answers = count_of_answers + 1 WHERE question_id = ?";
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    jdbcTemplate.update(sql, questionId);
+  }
 }
