@@ -1,6 +1,6 @@
 package com.giwankim.core.mvc;
 
-import com.giwankim.next.controller.user.UnauthorizedException;
+import com.giwankim.next.controller.UnauthorizedException;
 import com.giwankim.next.controller.user.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
