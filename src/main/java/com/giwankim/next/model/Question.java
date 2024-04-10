@@ -54,6 +54,10 @@ public class Question {
     return countOfAnswers;
   }
 
+  public boolean isUserWriter(User user) {
+    return Objects.equals(writer, user.getUserId());
+  }
+
   @Override
   public boolean equals(Object object) {
     if (this == object) return true;
