@@ -19,6 +19,10 @@ public class Answer {
     this.questionId = questionId;
   }
 
+  public Answer(String writer, String contents, long questionId) {
+    this(0L, writer, contents, LocalDateTime.now(), questionId);
+  }
+
   public long getAnswerId() {
     return answerId;
   }
