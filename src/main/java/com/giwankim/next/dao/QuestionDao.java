@@ -12,7 +12,7 @@ public class QuestionDao {
   public Question insert(Question question) {
     final String sql =
       "INSERT INTO question (writer, title, contents, created_date, count_of_answers) VALUES (?, ?, ?, ?, ?)";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    MyJdbcTemplate jdbcTemplate = MyJdbcTemplate.getInstance();
     PreparedStatementCreator psc = new PreparedStatementCreator() {
       @Override
       public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -33,7 +33,7 @@ public class QuestionDao {
   public Optional<Question> findById(long questionId) {
     final String sql = "SELECT question_id, writer, title, contents, created_date, count_of_answers FROM question" +
       " WHERE question_id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    MyJdbcTemplate jdbcTemplate = MyJdbcTemplate.getInstance();
     Question question = jdbcTemplate.queryForObject(sql, rs -> new Question(
       rs.getLong("question_id"),
       rs.getString("writer"),
@@ -48,7 +48,7 @@ public class QuestionDao {
   public List<Question> findAll() {
     final String sql = "SELECT question_id, writer, title, contents, created_date, count_of_answers FROM question" +
       " ORDER BY question_id DESC";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    MyJdbcTemplate jdbcTemplate = MyJdbcTemplate.getInstance();
     return jdbcTemplate.query(sql, rs -> new Question(
       rs.getLong("question_id"),
       rs.getString("writer"),
@@ -69,20 +69,20 @@ public class QuestionDao {
         ps.setLong(4, question.getQuestionId());
       }
     };
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    MyJdbcTemplate jdbcTemplate = MyJdbcTemplate.getInstance();
     jdbcTemplate.update(sql, pss);
     return findById(question.getQuestionId()).orElseThrow();
   }
 
   public void delete(long questionId) {
     final String sql = "DELETE FROM question WHERE question_id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    MyJdbcTemplate jdbcTemplate = MyJdbcTemplate.getInstance();
     jdbcTemplate.update(sql, questionId);
   }
 
   public void incrementAnswerCount(long questionId) {
     final String sql = "UPDATE question SET count_of_answers = count_of_answers + 1 WHERE question_id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    MyJdbcTemplate jdbcTemplate = MyJdbcTemplate.getInstance();
     jdbcTemplate.update(sql, questionId);
   }
 }
