@@ -1,6 +1,6 @@
-package com.giwankim.next.controller;
+package com.giwankim.next.controller.qna;
 
-import com.giwankim.core.mvc.JspView;
+import com.giwankim.core.mvc.JsonView;
 import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.dao.QuestionDao;
 import com.giwankim.next.model.Question;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class HomeControllerTest {
+class ApiListQuestionsControllerTest {
   @Mock
   HttpServletRequest request;
 
@@ -32,23 +32,23 @@ class HomeControllerTest {
   @Mock
   QuestionDao questionDao;
 
-  HomeController sut;
+  ApiListQuestionsController sut;
 
   @BeforeEach
   void setUp() {
-    sut = new HomeController(questionDao);
+    sut = new ApiListQuestionsController(questionDao);
   }
 
   @Test
-  @DisplayName("홈 페이지를 서빙한다.")
-  void shouldReturnView() throws ServletException, IOException {
+  @DisplayName("json 데이터 응답이다.")
+  void shouldReturnJson() throws ServletException, IOException {
     ModelAndView mv = sut.handleRequest(request, response);
-    assertThat(mv.getView()).isEqualTo(JspView.from("home.jsp"));
+    assertThat(mv.getView()).isInstanceOf(JsonView.class);
   }
 
   @Test
-  @DisplayName("질문 목록을 UI 모델에 추가한다.")
-  void shouldAttachQuestions() throws ServletException, IOException {
+  @DisplayName("질문 목록이 응답에 포함된다.")
+  void shouldAddQuestionsToResponse() throws ServletException, IOException {
     List<Question> questions = List.of(
       aQuestion().questionId(1L).build(),
       aQuestion().questionId(2L).build());
