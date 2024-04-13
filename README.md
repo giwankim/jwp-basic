@@ -30,4 +30,18 @@
 
 #### 2. 로컬 환경에서 톰캣 서버를 시작한 후 http://localhost:8080으로 접근하면 질문 목록을 확인할 수 있다. http://localhost:8080으로 접근해서 질문 목록이 보이기까지 소스코드의 호출 순서 및 흐름을 설명하라.
 
+1. 서블릿 컨테이너는 새로운 `HttpServletRequest`와 `HttpServletResponse` 인스턴스를 생성한다.
+2. 생성된 `HttpServletRequest`와 `HttpServletResponse` 객체들은 `ServletContext`에 등록되어 있는 `Filter`들의 `doFilter()` 메소드를 통과하게 된다.
+    * `ResourceFilter.doFilter()`에서는 요청 URL "/"은 정적 리소스가 아니기에 `filterChain.doFilter()` 메소드가 호출되어 다음 필터나 서블릿으로 넘어간다.
+    * `CharacterEncodingFilter.doFilter()` 메소드가 호출되어 응답/요청의 character encoding을 "UTF-8"로 세팅한다.
+3. `DispatcherServlet`의 `@WebServlet` 어노테이션의 `urlPatterns` 값이 "/" 이기에 `DispatcherServlet#service()` 메소드가 호출된다.
+   일반적으로 `servlet`의 `service` 메소드가 호출되면 `request.getMethod()`의 결과에 따라 적절한 `doXXX()` 메소드가 호출되고 해당 메소드를 서블릿에 오버라이딩 되어 있지
+   않을 경우에는 HTTP 405 에러로 응답한다.
+    1. `DispatcherServlet#service()` 메소드에서 요청 URL "/"을 처리하도록 `RequestMapping` 객체에 매핑되어 있는 `Controller`인 `HomeController`
+       를 가져온다.
+    2. `HomeController#handleRequest()` 메소드가 실행되어 `ModelAndView` 객체가 반환된다.
+        * 모델에는 "questions"라는 키 값에 모든 질문의 목록이 담겨있고,
+        * View는 JspView로서 `home.jsp`를 담고 있다.
+    3. `JspView` 객체의 `render()` 메소드가 호출되어 모델에 있는 질문들이 `home.jsp`에 전달되고 동적으로 생성된 HTML 파일이 브라우저에 응답된다.
+
 #### 7. next.web.qna 패키지의 ShowController는 멀티스레드 상황에서 문제가 발생할 수 있는 코드이다. 문제가 발생하는 이유를 설명하고 문제가 발생하지 않도록 수정한다.
