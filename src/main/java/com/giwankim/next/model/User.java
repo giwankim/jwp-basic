@@ -54,6 +54,10 @@ public class User implements Serializable {
     return this.userId.equals(user.userId);
   }
 
+  public boolean isWriter(Question question) {
+    return Objects.equals(userId, question.getWriter());
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
