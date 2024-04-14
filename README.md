@@ -45,3 +45,34 @@
     3. `JspView` 객체의 `render()` 메소드가 호출되어 모델에 있는 질문들이 `home.jsp`에 전달되고 동적으로 생성된 HTML 파일이 브라우저에 응답된다.
 
 #### 7. next.web.qna 패키지의 ShowController는 멀티스레드 상황에서 문제가 발생할 수 있는 코드이다. 문제가 발생하는 이유를 설명하고 문제가 발생하지 않도록 수정한다.
+
+문제되는 코드는 다음과 같다.
+
+```java
+public class ShowController extends AbstractController {
+  private QuestionDao questionDao = new QuestionDao();
+  private AnswerDao answerDao = new AnswerDao();
+  private Question question;
+  private List<Answer> answers;
+
+  @Override
+  public ModelAndView execute(HttpServletRequest req, HttpServletResponse response) throws Exception {
+    Long questionId = Long.parseLong(req.getParameter("questionId"));
+
+    question = questionDao.findById(questionId);
+    answers = answerDao.findAllByQuestionId(questionId);
+
+    ModelAndView mav = jspView("/qna/show.jsp");
+    mav.addObject("question", question);
+    mav.addObject("answers", answers);
+    return mav;
+  }
+}
+```
+
+서블릿은 한 번만 생성되고 서블릿 컨테이너 라이프사이클에 따라서 서블릿 컨테이너 초기화 과정에서 한 번만 `init()`되고 컨테이너가 내려가는 과정에서 `destroy()`된다. 따라서 멀티스레드 환경에서 동시에
+다수의 요청을 처리해도 하나의 `ShowController` 인스턴스의 `execute()` 메소드가 호출된다. 여기서 문제 되는 부분이 인스턴스 변수에 DB에서 불러온 `question` 객체와 `answer`
+객체를 임시 저장하는 부분이다. 응답이 반환되기 전에 컨텍스 스위칭이 되어 다른 스레드에서 `question`이나 `answer`가 덮어 씌워져서 응답이 나가게 되면 다른 요청한 질문과 응답이 사용자에게 보일 수
+있다.
+
+문제를 해결하기 위해서는 `question`과 `answers`를 로컬 변수로 변경하면 된다.
