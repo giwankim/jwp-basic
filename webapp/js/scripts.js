@@ -28,12 +28,13 @@ function addAnswer(e) {
 }
 
 function onSuccess(json, status) {
+  const { answer } = json;
   const answerTemplate = $("#answerTemplate").html();
   const template = answerTemplate.format(
-    json.writer,
-    new Date(json.createdDate),
-    json.contents,
-    json.answerId);
+    answer.writer,
+    new Date(answer.createdDate),
+    answer.contents,
+    answer.answerId);
   $(".qna-comment-slipp-articles").prepend(template);
 }
 
@@ -58,7 +59,8 @@ function deleteAnswer(e) {
       alert("error : failed to delete answer");
     },
     success: function (json, status) {
-      if (json.success) {
+      const { result } = json;
+      if (result.success) {
         deleteBtn.closest("article").remove();
       }
     }

@@ -1,10 +1,15 @@
 package com.giwankim.core.jdbc;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcTemplate {
+public enum JdbcTemplate {
+  INSTANCE;
+
   public void update(String sql, PreparedStatementSetter pss) {
     try (Connection connection = ConnectionManager.getConnection();
          PreparedStatement ps = connection.prepareStatement(sql)) {

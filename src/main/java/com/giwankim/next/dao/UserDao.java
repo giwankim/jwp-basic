@@ -10,7 +10,7 @@ import java.util.Optional;
 public class UserDao {
   public User insert(User user) {
     final String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    JdbcTemplate jdbcTemplate = JdbcTemplate.INSTANCE;
     jdbcTemplate.update(
       sql,
       user.getUserId(),
@@ -28,7 +28,7 @@ public class UserDao {
       rs.getString("password"),
       rs.getString("name"),
       rs.getString("email"));
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    JdbcTemplate jdbcTemplate = JdbcTemplate.INSTANCE;
     return Optional.ofNullable(
       jdbcTemplate.queryForObject(sql, rm, userId));
   }
@@ -40,13 +40,13 @@ public class UserDao {
       rs.getString("password"),
       rs.getString("name"),
       rs.getString("email"));
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    JdbcTemplate jdbcTemplate = JdbcTemplate.INSTANCE;
     return jdbcTemplate.query(sql, rm);
   }
 
   public User update(User user) {
     final String sql = "UPDATE users SET password = ?, name = ?, email = ? WHERE user_id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    JdbcTemplate jdbcTemplate = JdbcTemplate.INSTANCE;
     jdbcTemplate.update(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
     return findByUserId(user.getUserId())
       .orElseThrow();
