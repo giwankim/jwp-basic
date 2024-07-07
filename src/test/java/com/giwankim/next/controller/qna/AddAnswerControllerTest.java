@@ -2,6 +2,7 @@ package com.giwankim.next.controller.qna;
 
 import com.giwankim.core.mvc.ModelAndView;
 import com.giwankim.next.dao.AnswerDao;
+import com.giwankim.next.dao.QuestionDao;
 import com.giwankim.next.model.Answer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,11 +32,14 @@ class AddAnswerControllerTest {
   @Mock
   AnswerDao answerDao;
 
+  @Mock
+  QuestionDao questionDao;
+
   AddAnswerController sut;
 
   @BeforeEach
   void setUp() {
-    sut = new AddAnswerController(answerDao);
+    sut = new AddAnswerController(questionDao, answerDao);
   }
 
   @Test
@@ -66,5 +70,16 @@ class AddAnswerControllerTest {
     ModelAndView mv = sut.handleRequest(request, response);
 
     assertThat(mv.getModel()).containsEntry("answer", answer);
+  }
+
+  @Test
+  @DisplayName("답변을 추가하면 댓글의 수가 증가한다.")
+  void shouldIncrementCountOfAnswers() throws ServletException, IOException {
+    long questionId = 1L;
+    when(request.getParameter("questionId")).thenReturn(String.valueOf(questionId));
+
+    sut.handleRequest(request, response);
+
+    verify(questionDao).incrementAnswerCount(questionId);
   }
 }

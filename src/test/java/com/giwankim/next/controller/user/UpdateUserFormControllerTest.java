@@ -2,6 +2,7 @@ package com.giwankim.next.controller.user;
 
 import com.giwankim.core.mvc.JspView;
 import com.giwankim.core.mvc.ModelAndView;
+import com.giwankim.next.controller.UnauthorizedException;
 import com.giwankim.next.dao.UserDao;
 import com.giwankim.next.model.User;
 import org.junit.jupiter.api.BeforeEach;

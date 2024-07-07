@@ -3,6 +3,7 @@ package com.giwankim.next.dao;
 import com.giwankim.core.jdbc.ConnectionManager;
 import com.giwankim.next.model.Question;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
@@ -26,6 +27,7 @@ class QuestionDaoTest {
   }
 
   @Test
+  @DisplayName("질문을 생성한다.")
   void shouldInsert() {
     Question question = aQuestion().build();
 
@@ -39,6 +41,7 @@ class QuestionDaoTest {
   }
 
   @Test
+  @DisplayName("모든 질문을 조회한다.")
   void shouldFindAll() {
     Question question1 = aQuestion().questionId(1L).build();
     Question question2 = aQuestion().questionId(2L).build();
@@ -51,6 +54,7 @@ class QuestionDaoTest {
   }
 
   @Test
+  @DisplayName("질문을 삭제한다.")
   void shouldDelete() {
     Question question = sut.insert(aQuestion().build());
     long questionId = question.getQuestionId();
@@ -61,12 +65,14 @@ class QuestionDaoTest {
   }
 
   @Test
+  @DisplayName("존재하지 않는 질문 삭제 요청을 해도 예외를 던지지 않는다.")
   void shouldNotThrowExceptionWhenDeletingNonExistent() {
     assertThatNoException().isThrownBy(
       () -> sut.delete(99L));
   }
 
   @Test
+  @DisplayName("질문을 수정한다.")
   void shouldUpdate() {
     Question question = sut.insert(aQuestion().build());
     Question expected = aQuestion()
@@ -82,9 +88,22 @@ class QuestionDaoTest {
   }
 
   @Test
+  @DisplayName("존재하지 않는 질문 수정 요청 시 예외를 던지지 않는다.")
   void shouldThrowExceptionWhenUpdatingNonExistent() {
     Question doesNotExist = aQuestion().questionId(99L).build();
     assertThatExceptionOfType(NoSuchElementException.class)
       .isThrownBy(() -> sut.update(doesNotExist));
+  }
+
+  @Test
+  @DisplayName("응답 댓글의 수를 하나 증가시킨다.")
+  void shouldIncrementCountOfAnswersByOne() {
+    Question question = sut.insert(aQuestion().build());
+    long questionId = question.getQuestionId();
+
+    sut.incrementAnswerCount(questionId);
+
+    Question incremented = sut.findById(questionId).orElseThrow();
+    assertThat(incremented.getCountOfAnswers()).isEqualTo(question.getCountOfAnswers() + 1);
   }
 }

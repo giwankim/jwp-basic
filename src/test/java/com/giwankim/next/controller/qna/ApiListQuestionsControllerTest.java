@@ -40,14 +40,14 @@ class ApiListQuestionsControllerTest {
   }
 
   @Test
-  @DisplayName("응답이 json 데이터이다.")
+  @DisplayName("json 데이터 응답이다.")
   void shouldReturnJson() throws ServletException, IOException {
     ModelAndView mv = sut.handleRequest(request, response);
     assertThat(mv.getView()).isInstanceOf(JsonView.class);
   }
 
   @Test
-  @DisplayName("응답에 질문 목록이 포함된다.")
+  @DisplayName("질문 목록이 응답에 포함된다.")
   void shouldAddQuestionsToResponse() throws ServletException, IOException {
     List<Question> questions = List.of(
       aQuestion().questionId(1L).build(),
