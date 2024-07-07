@@ -16,7 +16,7 @@ import java.util.Optional;
 public class AnswerDao {
   public Answer insert(Answer answer) {
     final String sql = "INSERT INTO answer (writer, contents, created_date, question_id) VALUES (?, ?, ?, ?)";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    JdbcTemplate jdbcTemplate = JdbcTemplate.INSTANCE;
     PreparedStatementCreator psc = new PreparedStatementCreator() {
       @Override
       public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -35,7 +35,7 @@ public class AnswerDao {
 
   public Optional<Answer> findById(long answerId) {
     final String sql = "SELECT answer_id, writer, contents, created_date, question_id FROM answer WHERE answer_id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    JdbcTemplate jdbcTemplate = JdbcTemplate.INSTANCE;
     Answer answer = jdbcTemplate.queryForObject(sql, rs -> new Answer(
       rs.getLong("answer_id"),
       rs.getString("writer"),
@@ -49,7 +49,7 @@ public class AnswerDao {
   public List<Answer> findAllByQuestionId(long questionId) {
     final String sql = "SELECT answer_id, writer, contents, created_date, question_id FROM answer WHERE question_id = ?" +
       " ORDER BY answer_id DESC";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    JdbcTemplate jdbcTemplate = JdbcTemplate.INSTANCE;
     return jdbcTemplate.query(sql, rs -> new Answer(
       rs.getLong("answer_id"),
       rs.getString("writer"),
@@ -61,7 +61,7 @@ public class AnswerDao {
 
   public Answer update(Answer answer) {
     final String sql = "UPDATE answer SET writer = ?, contents = ?, question_id = ? WHERE answer_id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    JdbcTemplate jdbcTemplate = JdbcTemplate.INSTANCE;
     jdbcTemplate.update(sql,
       answer.getWriter(),
       answer.getContents(),
@@ -72,7 +72,7 @@ public class AnswerDao {
 
   public void delete(long answerId) {
     final String sql = "DELETE FROM answer WHERE answer_id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    JdbcTemplate jdbcTemplate = JdbcTemplate.INSTANCE;
     jdbcTemplate.update(sql, answerId);
   }
 }
