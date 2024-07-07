@@ -1,9 +1,16 @@
 package com.giwankim.next.controller.user;
 
 import com.giwankim.core.jdbc.ConnectionManager;
+import com.giwankim.core.mvc.JspView;
+import com.giwankim.core.mvc.ModelAndView;
+import com.giwankim.core.mvc.View;
 import com.giwankim.next.dao.UserDao;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
@@ -15,50 +22,52 @@ import java.io.IOException;
 
 import static com.giwankim.Fixtures.aUser;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class CreateUserControllerTest {
+  @Mock
   HttpServletRequest request;
 
+  @Mock
   HttpServletResponse response;
 
-  CreateUserController sut;
-
+  @Mock
   UserDao userDao;
+
+  CreateUserController sut;
 
   @BeforeEach
   void setUp() {
     ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
     populator.addScript(new ClassPathResource("schema.sql"));
-    populator.addScript(new ClassPathResource("data.sql"));
     DatabasePopulatorUtils.execute(populator, ConnectionManager.getDatasource());
-
-    request = mock(HttpServletRequest.class);
-    response = mock(HttpServletResponse.class);
-    userDao = mock(UserDao.class);
     sut = new CreateUserController(userDao);
   }
 
   @Test
+  @DisplayName("루트 경로로 이동한다.")
   void shouldRedirectToRoot() throws ServletException, IOException {
     when(request.getParameter("userId")).thenReturn("userId");
     when(request.getParameter("password")).thenReturn("password");
     when(request.getParameter("name")).thenReturn("name");
     when(request.getParameter("email")).thenReturn("email");
 
-    String view = sut.execute(request, response);
+    ModelAndView mv = sut.handleRequest(request, response);
 
-    assertThat(view).isEqualTo("redirect:/");
+    assertThat(mv.getView()).isEqualTo(JspView.from("redirect:/"));
   }
 
   @Test
+  @DisplayName("사용자를 저장한다.")
   void shouldPersistUser() throws ServletException, IOException {
     when(request.getParameter("userId")).thenReturn("userId");
     when(request.getParameter("password")).thenReturn("password");
     when(request.getParameter("name")).thenReturn("name");
     when(request.getParameter("email")).thenReturn("email");
 
-    sut.execute(request, response);
+    sut.handleRequest(request, response);
 
     verify(userDao).insert(aUser().build());
   }

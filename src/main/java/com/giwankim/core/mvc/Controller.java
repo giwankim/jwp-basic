@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@FunctionalInterface
 public interface Controller {
-  String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+  ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 }

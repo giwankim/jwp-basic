@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-public class ForwardController implements Controller {
+public class ForwardController extends AbstractController {
   private final String forwardUrl;
 
   public ForwardController(String forwardUrl) {
@@ -14,7 +14,7 @@ public class ForwardController implements Controller {
   }
 
   @Override
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    return forwardUrl;
+  public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    return jspView(forwardUrl);
   }
 }
